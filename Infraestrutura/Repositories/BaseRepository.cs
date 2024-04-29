@@ -6,7 +6,7 @@ namespace Infraestrutura.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
-        private AppDbContext _context;
+        protected AppDbContext _context;
         public BaseRepository(AppDbContext context)
         {
             _context = context;
@@ -37,6 +37,11 @@ namespace Infraestrutura.Repositories
         {
             _context.Set<T>().Remove(value);
             return _context.SaveChangesAsync();
+        }
+        public Task DeleteAsync(Guid id)
+        {   
+            T value = Get(id);
+            return DeleteAsync(value);
         }
     }
 }

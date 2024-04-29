@@ -16,6 +16,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddScoped<IMotoRepository, MotoRepository>();
+builder.Services.AddScoped<IMotoService, MotoService>();
 
 var app = builder.Build();
 

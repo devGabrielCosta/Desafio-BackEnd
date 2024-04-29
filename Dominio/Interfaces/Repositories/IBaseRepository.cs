@@ -9,5 +9,6 @@ namespace Dominio.Interfaces.Repositories
         Task InsertAsync(T value);
         Task UpdateAsync(T value);
         Task DeleteAsync(T value);
+        Task DeleteAsync(Guid id);
     }
 }
