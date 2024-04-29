@@ -1,5 +1,5 @@
 using Dominio.Entities;
-using Infraestrutura.Repositories;
+using Dominio.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aplicacao.Controllers
@@ -8,23 +8,23 @@ namespace Aplicacao.Controllers
     [Route("[controller]")]
     public class AdminController : ControllerBase
     {   
-        private AdminRepository _repository { get; }
+        private IAdminService _service{ get; }
 
-        public AdminController(AdminRepository repository)
+        public AdminController(IAdminService service)
         {
-            _repository = repository;
+            _service = service;
         }
 
         [HttpGet]
         public IEnumerable<Admin> Get()
         {
-            return _repository.GetAll().ToList();
+            return _service.GetAdmins();
         }
 
         [HttpPost]
-        public void Insert()
+        public Admin Insert()
         {
-            _repository.Insert();
+            return _service.CreateAdmin();
         }
     }
 }

@@ -1,3 +1,6 @@
+using Dominio.Interfaces.Repositories;
+using Dominio.Interfaces.Services;
+using Dominio.Services;
 using Infraestrutura.Context;
 using Infraestrutura.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -11,7 +14,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>();
-builder.Services.AddScoped<AdminRepository, AdminRepository>();
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 
 var app = builder.Build();
 
