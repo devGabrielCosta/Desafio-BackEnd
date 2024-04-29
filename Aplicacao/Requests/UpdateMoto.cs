@@ -2,6 +2,6 @@
 {
     public class UpdateMoto
     {
-        public string? Placa { get; set; }
+        public string Placa { get; set; }
     }
 }
