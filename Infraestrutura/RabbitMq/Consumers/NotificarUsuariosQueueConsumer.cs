@@ -2,10 +2,6 @@
 using Dominio.Interfaces.Handlers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
-using System.Text;
 using System.Text.Json;
 
 namespace Infraestrutura.RabbitMq.Consumers

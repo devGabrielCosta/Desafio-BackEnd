@@ -1,7 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Dominio.Entities;
 using System.Reflection;
-using Npgsql;
 using Microsoft.Extensions.Configuration;
 
 namespace Infraestrutura.Context

@@ -2,7 +2,6 @@
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
-using System.Numerics;
 
 namespace Dominio.Services
 {

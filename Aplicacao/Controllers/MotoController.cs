@@ -1,5 +1,4 @@
 ﻿using Aplicacao.Requests;
-using Dominio.Entities;
 using Dominio.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 using Aplicacao.Mappers;

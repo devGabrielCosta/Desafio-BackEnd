@@ -1,7 +1,6 @@
 ﻿using Aplicacao.Mappers;
 using Aplicacao.Requests;
 using Aplicacao.Response;
-using Dominio.Entities;
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;

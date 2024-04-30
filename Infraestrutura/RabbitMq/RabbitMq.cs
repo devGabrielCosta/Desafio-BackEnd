@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -60,7 +59,7 @@ namespace Infraestrutura.RabbitMq
                             handleMessage.Invoke(command);
                             _model.BasicAck(@event.DeliveryTag, true);
                         }
-                        catch(Exception e) 
+                        catch (Exception)
                         {
                             throw;
                         }

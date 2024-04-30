@@ -1,6 +1,4 @@
-﻿using System.Windows.Input;
-
-namespace Dominio.Handlers.Commands
+﻿namespace Dominio.Handlers.Commands
 {
     public class NotificacaoCommand
     {

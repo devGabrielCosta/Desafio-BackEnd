@@ -1,5 +1,4 @@
-﻿using Dominio.Entities;
-using Dominio.Handlers.Commands;
+﻿using Dominio.Handlers.Commands;
 using Dominio.Interfaces.Handlers;
 using Dominio.Interfaces.Repositories;
 
