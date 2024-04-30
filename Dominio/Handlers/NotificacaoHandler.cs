@@ -16,7 +16,7 @@ namespace Dominio.Handlers
             _pedidoRepository = pedidoRepository;
         }
 
-        public async Task Handle(NotificacaoCommand @event)
+        public void Handle(NotificacaoCommand @event)
         {
             var entregadoresDisponiveis = _entregadorRepository.EntregadoresAptosPedido();
             if (!entregadoresDisponiveis.Any())
@@ -25,7 +25,11 @@ namespace Dominio.Handlers
                 return;
             }
 
-            var pedido = _pedidoRepository.Get(@event.PedidoId);
+            var pedido = _pedidoRepository.Get(@event.PedidoId).FirstOrDefault();
+            if(pedido == null)
+            {
+                throw new ArgumentException("PedidoId não encontrado");
+            }
             
             var listNotificados = pedido.Notificados.ToList();
             listNotificados.AddRange(entregadoresDisponiveis.ToList());

@@ -11,9 +11,9 @@ namespace Infraestrutura.Repositories
         { 
         }
 
-        public Pedido? GetNotificados(Guid id)
+        public IQueryable<Pedido> GetNotificados(Guid id)
         {
-            return _context.Set<Pedido>().Where(p => p.Id == id).Include("Notificados").FirstOrDefault();
+            return _context.Set<Pedido>().Where(p => p.Id == id).Include("Notificados");
         }
     }
 }

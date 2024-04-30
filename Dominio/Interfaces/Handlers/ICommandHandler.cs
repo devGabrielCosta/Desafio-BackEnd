@@ -8,10 +8,10 @@ namespace Dominio.Interfaces.Handlers
 {
     public interface ICommandHandler<Tin, Tout>
     {
-        Task<Tout> Handle(Tin @event);
+        Tout Handle(Tin @event);
     }
     public interface ICommandHandler<Tin>
     {
-        Task Handle(Tin @event);
+        void Handle(Tin @event);
     }
 }

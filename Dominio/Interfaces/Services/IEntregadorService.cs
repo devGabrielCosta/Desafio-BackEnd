@@ -6,7 +6,8 @@ namespace Dominio.Interfaces.Services
     {
         IEnumerable<Entregador> Get();
         Entregador Get(Guid Id);
-        Task<Entregador> InsertEntregador(Entregador entregador);
-        Task<Entregador> UpdateCnhImagemEntregador(Guid id, string imagem);
+        Entregador GetLocacoes(Guid Id);
+        Task InsertEntregadorAsync(Entregador entregador);
+        Entregador UpdateCnhImagemEntregador(Guid id, string imagem);
     }
 }

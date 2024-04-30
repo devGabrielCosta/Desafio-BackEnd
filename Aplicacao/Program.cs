@@ -2,10 +2,12 @@ using Dominio.Handlers;
 using Dominio.Handlers.Commands;
 using Dominio.Interfaces.Handlers;
 using Dominio.Interfaces.Mensageria;
+using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
 using Dominio.Services;
 using Infraestrutura.Context;
+using Infraestrutura.Notification;
 using Infraestrutura.RabbitMq.Consumers;
 using Infraestrutura.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +27,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>();
+
+builder.Services.AddScoped<INotificationContext, NotificationContext>();
 
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IAdminService, AdminService>();

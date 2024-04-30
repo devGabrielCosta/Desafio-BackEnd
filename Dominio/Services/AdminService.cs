@@ -13,12 +13,12 @@ namespace Dominio.Services
             _repository = repository;
         }
 
-        public IEnumerable<Admin> GetAdmins()
+        public IEnumerable<Admin> Get()
         {
             return _repository.Get().ToList();
         }
 
-        public async Task<Admin> CreateAdmin()
+        public async Task<Admin> CreateAdminAsync()
         {
             var admin = new Admin();
             await _repository.InsertAsync(admin);

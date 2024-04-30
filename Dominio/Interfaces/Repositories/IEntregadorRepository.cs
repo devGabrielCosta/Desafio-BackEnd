@@ -4,6 +4,7 @@ namespace Dominio.Interfaces.Repositories
 {
     public interface IEntregadorRepository : IBaseRepository<Entregador>
     {
-        IEnumerable<Entregador> EntregadoresAptosPedido();
+        IQueryable<Entregador> GetLocacoes();
+        IQueryable<Entregador> EntregadoresAptosPedido();
     }
 }

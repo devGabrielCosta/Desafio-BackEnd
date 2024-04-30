@@ -4,7 +4,7 @@ namespace Dominio.Interfaces.Services
 {
     public interface ILocacaoService
     {
-        Task<Locacao?> RealizarLocacao(Locacao locacao);
-        Task<decimal> ConsultarDevolucao(Guid id, DateTime previsaoDevolucao);
+        Task InsertLocacaoAsync(Locacao locacao);
+        object ConsultarDevolucao(Guid id, DateTime previsaoDevolucao);
     }
 }

@@ -6,10 +6,10 @@ namespace Dominio.Interfaces.Services
     {
         IEnumerable<Moto> GetByPlaca(string placa);
         IEnumerable<Moto> GetMotosDisponiveis();
-        Task<Moto> InsertMoto(Moto moto);
-        Task<Moto> UpdatePlacaMoto(Guid id, string placa);
-        Task UpdateMoto(Moto moto);
-        Task DeleteMoto(Guid id);
+        Task InsertMotoAsync(Moto moto);
+        Moto UpdatePlacaMoto(Guid id, string placa);
+        void UpdateMoto(Moto moto);
+        void DeleteMoto(Guid id);
 
     }
 }

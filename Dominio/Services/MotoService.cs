@@ -1,4 +1,5 @@
 ﻿using Dominio.Entities;
+using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
 
@@ -7,10 +8,12 @@ namespace Dominio.Services
     public class MotoService : IMotoService
     {
         public IMotoRepository _repository { get; }
+        private INotificationContext _notificationContext;
 
-        public MotoService(IMotoRepository repository)
+        public MotoService(IMotoRepository repository, INotificationContext notificationContext)
         {
             _repository = repository;
+            _notificationContext = notificationContext;
         }
 
         public IEnumerable<Moto> GetByPlaca(string placa)
@@ -19,30 +22,56 @@ namespace Dominio.Services
         }
         public IEnumerable<Moto> GetMotosDisponiveis()
         {
-            return _repository.Get();
+            return _repository.Get().Where(m => m.Disponivel);
         }
 
-        public async Task<Moto> InsertMoto(Moto moto)
-        {
+        public async Task InsertMotoAsync(Moto moto)
+        {   
+            var motosComMesmaPlaca = this.GetByPlaca(moto.Placa).Any();
+            if(motosComMesmaPlaca)
+            {
+                _notificationContext.AddNotification("Placa já utilizada");
+                return;
+            }
+
             await _repository.InsertAsync(moto);
-            return moto;
         }
 
-        public async Task<Moto> UpdatePlacaMoto(Guid id, string placa)
+        public Moto UpdatePlacaMoto(Guid id, string placa)
         {
-            var moto = _repository.Get(id);
+            var moto = _repository.Get(id).FirstOrDefault();
+            if (moto == null)
+            {
+                _notificationContext.AddNotification("Moto não encontrada");
+                return null;
+            }
+
             moto.Placa = placa;
-            await this.UpdateMoto(moto);
+            this.UpdateMoto(moto);
+
             return moto;
         }
 
-        public async Task UpdateMoto(Moto moto)
+        public void UpdateMoto(Moto moto)
         {
             _repository.Update(moto);
         }
 
-        public async Task DeleteMoto(Guid id)
-        {
+        public void DeleteMoto(Guid id)
+        {   
+            var moto = _repository.GetLocacoes().Where(m => m.Id == id).FirstOrDefault();
+
+            if (moto == null)
+            {
+                _notificationContext.AddNotification("Moto não encontrada");
+                return;
+            }
+            if(moto.Locacoes.Any(l => l.Ativo))
+            {
+                _notificationContext.AddNotification("Moto possui locação ativa");
+                return;
+            }
+
             _repository.Delete(id);
         }
     }

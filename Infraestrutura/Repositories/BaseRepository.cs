@@ -12,12 +12,12 @@ namespace Infraestrutura.Repositories
             _context = context;
         }
 
-        public T? Get(Guid id)
+        public IQueryable<T> Get(Guid id)
         {
-            return _context.Set<T>().FirstOrDefault(x => x.Id == id);
+            return _context.Set<T>().Where(x => x.Id == id);
         }
 
-        public IEnumerable<T> Get()
+        public IQueryable<T> Get()
         {
             return _context.Set<T>();
         }
@@ -40,7 +40,7 @@ namespace Infraestrutura.Repositories
         }
         public void Delete(Guid id)
         {   
-            T value = Get(id);
+            T value = Get(id).FirstOrDefault();
             Delete(value);
         }
     }

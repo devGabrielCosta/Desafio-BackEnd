@@ -1,4 +1,6 @@
-﻿namespace Aplicacao.Requests
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Aplicacao.Requests
 {
     public class CreateEntregador
     {

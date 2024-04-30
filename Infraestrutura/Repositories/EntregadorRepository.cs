@@ -11,7 +11,12 @@ namespace Infraestrutura.Repositories
         { 
         }
 
-        public IEnumerable<Entregador> EntregadoresAptosPedido()
+        public IQueryable<Entregador> GetLocacoes()
+        {
+            return _context.Set<Entregador>().Include("Locacoes");
+        }
+
+        public IQueryable<Entregador> EntregadoresAptosPedido()
         {
             var entregador = _context.Set<Entregador>().Include("Locacoes");
             var entregadorComLocacao = entregador.Where(e => e.Locacoes.Any(l => l.Ativo)).Include("Pedidos");

@@ -1,4 +1,5 @@
 ﻿using Dominio.Entities;
+using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
 using System.Numerics;
@@ -10,38 +11,62 @@ namespace Dominio.Services
         private ILocacaoRepository _repository { get; }
         private IEntregadorService _entregadorService { get; }
         private IMotoService _motoService { get; }
+        private INotificationContext _notificationContext { get; }
 
-        public LocacaoService(ILocacaoRepository repository, IEntregadorService entregadorService, IMotoService motoService)
+        public LocacaoService(ILocacaoRepository repository, IEntregadorService entregadorService, IMotoService motoService, INotificationContext notificationContext)
         {
             _repository = repository;
             _entregadorService = entregadorService;
             _motoService = motoService;
+            _notificationContext = notificationContext;
         }
 
-        public async Task<Locacao?> RealizarLocacao(Locacao locacao)
+        public async Task InsertLocacaoAsync(Locacao locacao)
         {
-            var moto = _motoService.GetMotosDisponiveis().Where(m => m.Disponivel).FirstOrDefault();
+            var moto = _motoService.GetMotosDisponiveis().FirstOrDefault();
             if (moto == null)
-                return null;
+            {
+                _notificationContext.AddNotification("Nenhuma moto disponivel");
+                return;
+            }
 
-            var entregador = _entregadorService.Get(locacao.EntregadorId);
+            var entregador = _entregadorService.GetLocacoes(locacao.EntregadorId);
+            if(entregador == null)
+            {
+                _notificationContext.AddNotification("Entregador não existe");
+                return;
+            }
+
+            if(entregador.Locacoes.Any(l => l.Ativo))
+            {
+                _notificationContext.AddNotification("Entregador já possui uma locação ativa");
+                return;
+            }
+
             if (!entregador.CnhTipo.ToLower().Contains("a"))
-                return null;
+            {
+                _notificationContext.AddNotification("Entregador não possui categoria A");
+                return;
+            }
 
             moto.Disponivel = false;
-            await _motoService.UpdateMoto(moto);
+            _motoService.UpdateMoto(moto);
 
             locacao.Moto = moto;
             locacao.Entregador = entregador;
 
             await _repository.InsertAsync(locacao);
-
-            return locacao;
         }
 
-        public async Task<decimal> ConsultarDevolucao(Guid id, DateTime previsaoDevolucao)
+        public object ConsultarDevolucao(Guid id, DateTime previsaoDevolucao)
         {
-            var locacao = _repository.Get(id);
+            var locacao = _repository.Get(id).FirstOrDefault();
+            if (locacao == null)
+            {
+                _notificationContext.AddNotification("Locação não encontrada");
+                return null;
+            }
+
             var plano = locacao.Plano;
 
             decimal preco = 0;
@@ -65,9 +90,10 @@ namespace Dominio.Services
 
             _repository.Update(locacao);
 
-            return preco;
+            return new { Preco = preco};
 
         }
+
         private int PrecoPlano(Plano plano)
         {
             if (plano is Plano.A)

@@ -4,6 +4,7 @@ namespace Dominio.Interfaces.Repositories
 {
     public interface IMotoRepository : IBaseRepository<Moto>
     {
-        IEnumerable<Moto> GetByPlaca(string placa);
+        IQueryable<Moto> GetByPlaca(string placa);
+        IQueryable<Moto> GetLocacoes();
     }
 }
