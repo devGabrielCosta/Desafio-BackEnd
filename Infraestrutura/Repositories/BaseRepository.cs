@@ -12,9 +12,9 @@ namespace Infraestrutura.Repositories
             _context = context;
         }
 
-        public T Get(Guid id)
+        public T? Get(Guid id)
         {
-            return _context.Set<T>().First(x => x.Id == id);
+            return _context.Set<T>().FirstOrDefault(x => x.Id == id);
         }
 
         public IEnumerable<T> Get()
@@ -22,26 +22,26 @@ namespace Infraestrutura.Repositories
             return _context.Set<T>();
         }
 
-        public Task InsertAsync(T value)
+        public async Task InsertAsync(T value)
         {
-            _context.Set<T>().AddAsync(value);
-            return _context.SaveChangesAsync();
+           await _context.Set<T>().AddAsync(value);
+           _context.SaveChanges();
         }
-        public Task UpdateAsync(T value)
+        public void Update(T value)
         {
             _context.Set<T>().Update(value);
-            return _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
-        public Task DeleteAsync(T value)
+        public void Delete(T value)
         {
             _context.Set<T>().Remove(value);
-            return _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
-        public Task DeleteAsync(Guid id)
+        public void Delete(Guid id)
         {   
             T value = Get(id);
-            return DeleteAsync(value);
+            Delete(value);
         }
     }
 }

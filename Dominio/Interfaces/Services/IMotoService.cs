@@ -8,7 +8,7 @@ namespace Dominio.Interfaces.Services
         IEnumerable<Moto> GetMotosDisponiveis();
         Task<Moto> InsertMoto(Moto moto);
         Task<Moto> UpdatePlacaMoto(Guid id, string placa);
-        void UpdateMoto(Moto moto);
+        Task UpdateMoto(Moto moto);
         Task DeleteMoto(Guid id);
 
     }

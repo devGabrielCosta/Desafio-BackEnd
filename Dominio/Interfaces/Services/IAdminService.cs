@@ -5,6 +5,6 @@ namespace Dominio.Interfaces.Services
     public interface IAdminService
     {
         IEnumerable<Admin> GetAdmins();
-        Admin CreateAdmin();
+        Task<Admin> CreateAdmin();
     }
 }

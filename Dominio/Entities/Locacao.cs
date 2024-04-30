@@ -14,6 +14,7 @@ namespace Dominio.Entities
         public DateTime Inicio { get; set; }
         public DateTime Termino { get; set; }
         public DateTime PrevisaoDevolucao { get; set; }
+        public bool Ativo { get; set; }
 
         public virtual Moto Moto { get; set; } = null!;
         public virtual Entregador Entregador { get; set; } = null!;
@@ -23,6 +24,7 @@ namespace Dominio.Entities
             Plano = plano;
             EntregadorId = entregadorId;
             Inicio = DateTime.Now.AddDays(1);
+            Ativo = true;
 
             if (Plano is Plano.A)
                 Termino = Inicio.AddDays(6);

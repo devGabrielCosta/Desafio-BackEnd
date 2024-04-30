@@ -14,6 +14,7 @@ namespace Dominio.Entities
 
         public Guid? EntregadorId { get; set; }
         public virtual Entregador Entregador { get; set; } = null!;
+        public virtual ICollection<Entregador> Notificados { get; set; } = new List<Entregador>();
 
         public Pedido(decimal valor)
         {

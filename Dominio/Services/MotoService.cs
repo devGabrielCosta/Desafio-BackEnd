@@ -32,18 +32,18 @@ namespace Dominio.Services
         {
             var moto = _repository.Get(id);
             moto.Placa = placa;
-            await _repository.UpdateAsync(moto);
+            await this.UpdateMoto(moto);
             return moto;
         }
 
-        public async void UpdateMoto(Moto moto)
+        public async Task UpdateMoto(Moto moto)
         {
-            await _repository.UpdateAsync(moto);
+            _repository.Update(moto);
         }
 
         public async Task DeleteMoto(Guid id)
         {
-           await _repository.DeleteAsync(id);
+            _repository.Delete(id);
         }
     }
 }

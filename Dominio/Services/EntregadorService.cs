@@ -31,9 +31,8 @@ namespace Dominio.Services
         {
             var entregador = _repository.Get(id);
             entregador.CnhImagem = imagem;
-            await _repository.UpdateAsync(entregador);
+            _repository.Update(entregador);
             return entregador;
         }
-
     }
 }

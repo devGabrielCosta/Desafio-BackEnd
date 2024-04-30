@@ -22,9 +22,9 @@ namespace Aplicacao.Controllers
         }
 
         [HttpPost]
-        public Admin Insert()
+        public async Task<Admin> Insert()
         {
-            return _service.CreateAdmin();
+            return await _service.CreateAdmin();
         }
     }
 }

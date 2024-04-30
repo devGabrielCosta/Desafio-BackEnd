@@ -29,7 +29,7 @@ namespace Dominio.Services
                 return null;
 
             moto.Disponivel = false;
-            _motoService.UpdateMoto(moto);
+            await _motoService.UpdateMoto(moto);
 
             locacao.Moto = moto;
             locacao.Entregador = entregador;
@@ -62,7 +62,8 @@ namespace Dominio.Services
             }
 
             locacao.PrevisaoDevolucao = previsaoDevolucao;
-            await _repository.UpdateAsync(locacao);
+
+            _repository.Update(locacao);
 
             return preco;
 

@@ -48,6 +48,16 @@ namespace Infraestrutura.Context
             builder.HasKey("Id");
             builder.HasIndex("Cnpj").IsUnique();
             builder.HasIndex("Cnh").IsUnique();
+
+            builder
+                .HasMany(e => e.Notificacoes)
+                .WithMany(e => e.Notificados)
+                .UsingEntity("Notificacoes",
+                    j =>{   
+                            j.Property("NotificacoesId").HasColumnName("PedidoId");
+                            j.Property("NotificadosId").HasColumnName("EntregadorId");
+                    }
+                );
         }
     }
 }

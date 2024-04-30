@@ -1,7 +1,12 @@
+using Dominio.Handlers;
+using Dominio.Handlers.Commands;
+using Dominio.Interfaces.Handlers;
+using Dominio.Interfaces.Mensageria;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
 using Dominio.Services;
 using Infraestrutura.Context;
+using Infraestrutura.RabbitMq.Consumers;
 using Infraestrutura.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
@@ -33,9 +38,14 @@ builder.Services.AddScoped<IEntregadorService, EntregadorService>();
 builder.Services.AddScoped<ILocacaoRepository, LocacaoRepository>();
 builder.Services.AddScoped<ILocacaoService, LocacaoService>();
 
-
 builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
 builder.Services.AddScoped<IPedidoService, PedidoService>();
+
+builder.Services.AddScoped<ICommandHandler<NotificacaoCommand>, NotificacaoHandler>();
+
+builder.Services.AddSingleton<IPublisher<NotificacaoCommand>, NotificarUsuariosQueuePublisher>();
+
+builder.Services.AddHostedService<NotificarUsuariosQueueConsumer>();
 
 var app = builder.Build();
 

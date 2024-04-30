@@ -18,10 +18,10 @@ namespace Dominio.Services
             return _repository.Get().ToList();
         }
 
-        public Admin CreateAdmin()
+        public async Task<Admin> CreateAdmin()
         {
             var admin = new Admin();
-            _repository.InsertAsync(admin);
+            await _repository.InsertAsync(admin);
             return admin;
         }
     }

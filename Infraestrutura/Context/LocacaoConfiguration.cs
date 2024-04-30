@@ -41,6 +41,10 @@ namespace Infraestrutura.Context
                 .HasColumnType("Date")
                 .IsRequired();
 
+            builder
+                .Property<bool>("Ativo")
+                .IsRequired();
+
             builder.HasKey("Id");
             builder.HasOne("Entregador").WithMany("Locacoes").HasForeignKey("EntregadorId");
             builder.HasOne("Moto").WithMany("Locacoes").HasForeignKey("MotoId"); ;
