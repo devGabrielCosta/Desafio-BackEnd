@@ -12,7 +12,7 @@ namespace Aplicacao.Mappers
                 request.Cnpj,
                 request.DataNascimento,
                 request.Cnh,
-                request.CnhTipo
+                request.CnhTipo.ToLower()
             );
         }
     }
