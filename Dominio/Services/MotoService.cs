@@ -17,6 +17,10 @@ namespace Dominio.Services
         {
             return _repository.GetByPlaca(placa).ToList();
         }
+        public IEnumerable<Moto> GetMotosDisponiveis()
+        {
+            return _repository.Get();
+        }
 
         public async Task<Moto> InsertMoto(Moto moto)
         {
@@ -30,6 +34,11 @@ namespace Dominio.Services
             moto.Placa = placa;
             await _repository.UpdateAsync(moto);
             return moto;
+        }
+
+        public async void UpdateMoto(Moto moto)
+        {
+            await _repository.UpdateAsync(moto);
         }
 
         public async Task DeleteMoto(Guid id)

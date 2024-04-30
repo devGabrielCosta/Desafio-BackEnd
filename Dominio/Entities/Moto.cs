@@ -13,10 +13,14 @@ namespace Dominio.Entities
             Ano = ano;
             Modelo = modelo;
             Placa = placa;
+            Disponivel = true;
         }
 
         public int Ano { get; set; }
         public string Modelo {  get; set; }
         public string Placa { get; set; }
+        public bool Disponivel { get; set; }
+
+        public virtual ICollection<Locacao> Locacoes { get; set; } = new List<Locacao>();
     }
 }

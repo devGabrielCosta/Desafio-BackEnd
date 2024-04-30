@@ -16,6 +16,10 @@ namespace Dominio.Services
         {
             return _repository.Get();
         }
+        public Entregador Get(Guid id)
+        {
+            return _repository.Get(id);
+        }
 
         public async Task<Entregador> InsertEntregador(Entregador entregador)
         {
