@@ -8,7 +8,6 @@ namespace Infraestrutura.Context
 {
     public  class AppDbContext : DbContext
     {
-        public DbSet<Admin> Admins { get; set; }
         public IConfiguration Configuration { get; }
 
         public AppDbContext(DbContextOptions<AppDbContext> options, IConfiguration configuration) : base(options) 

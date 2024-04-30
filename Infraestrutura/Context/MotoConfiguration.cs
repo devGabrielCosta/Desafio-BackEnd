@@ -14,8 +14,7 @@ namespace Infraestrutura.Context
 
             builder
                 .Property("Ano")
-                .IsRequired()
-                .HasMaxLength(4);
+                .IsRequired();
 
             builder
                 .Property("Modelo")
@@ -26,12 +25,11 @@ namespace Infraestrutura.Context
             builder
                 .Property("Placa")
                 .IsRequired()
-                .HasColumnType("varchar")
-                .HasMaxLength (7);
+                .HasColumnType("char(7)");
 
 
             builder.HasKey("Id");
-            builder.HasIndex("Placa");
+            builder.HasIndex("Placa").IsUnique();
         }
     }
 }

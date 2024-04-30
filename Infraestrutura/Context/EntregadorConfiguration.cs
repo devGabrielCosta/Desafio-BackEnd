@@ -19,8 +19,7 @@ namespace Infraestrutura.Context
 
             builder
                 .Property("Cnpj")
-                .HasColumnType("varchar")
-                .HasMaxLength(14)
+                .HasColumnType("char(14)")
                 .IsRequired();
 
             builder
@@ -30,14 +29,12 @@ namespace Infraestrutura.Context
 
             builder
                 .Property("Cnh")
-                .HasColumnType("varchar")
-                .HasMaxLength(50)
+                .HasColumnType("char(12)")
                 .IsRequired();
 
             builder
                 .Property("CnhTipo")
-                .HasColumnType("varchar")
-                .HasMaxLength(5)
+                .HasColumnType("char(5)")
                 .IsRequired();
 
             builder
