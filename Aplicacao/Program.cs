@@ -1,16 +1,5 @@
-using Dominio.Handlers;
-using Dominio.Handlers.Commands;
-using Dominio.Interfaces.Handlers;
-using Dominio.Interfaces.Mensageria;
-using Dominio.Interfaces.Notification;
-using Dominio.Interfaces.Repositories;
-using Dominio.Interfaces.Services;
-using Dominio.Services;
-using Infraestrutura.Context;
-using Infraestrutura.Notification;
-using Infraestrutura.RabbitMq.Consumers;
-using Infraestrutura.Repositories;
-using Microsoft.EntityFrameworkCore;
+using Dominio;
+using Infraestrutura;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,30 +17,10 @@ builder.Services.AddControllers()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>();
 
-builder.Services.AddScoped<INotificationContext, NotificationContext>();
-
-builder.Services.AddScoped<IAdminRepository, AdminRepository>();
-builder.Services.AddScoped<IAdminService, AdminService>();
-
-builder.Services.AddScoped<IMotoRepository, MotoRepository>();
-builder.Services.AddScoped<IMotoService, MotoService>();
-
-builder.Services.AddScoped<IEntregadorRepository, EntregadorRepository>();
-builder.Services.AddScoped<IEntregadorService, EntregadorService>();
-
-builder.Services.AddScoped<ILocacaoRepository, LocacaoRepository>();
-builder.Services.AddScoped<ILocacaoService, LocacaoService>();
-
-builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
-builder.Services.AddScoped<IPedidoService, PedidoService>();
-
-builder.Services.AddScoped<ICommandHandler<NotificacaoCommand>, NotificacaoHandler>();
-
-builder.Services.AddSingleton<IPublisher<NotificacaoCommand>, NotificarUsuariosQueuePublisher>();
-
-builder.Services.AddHostedService<NotificarUsuariosQueueConsumer>();
+builder.Services.AddRepositories();
+builder.Services.AddServices();
+builder.Services.AddRabbitMq();
 
 var app = builder.Build();
 
@@ -66,16 +35,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
-{
-    var _db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    if (_db != null)
-    {
-        if (_db.Database.GetPendingMigrations().Any())
-        {
-            _db.Database.Migrate();
-        }
-    }
-}
+app.Services.ExecuteMigration();
 
 app.Run();
