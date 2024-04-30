@@ -33,6 +33,10 @@ builder.Services.AddScoped<IEntregadorService, EntregadorService>();
 builder.Services.AddScoped<ILocacaoRepository, LocacaoRepository>();
 builder.Services.AddScoped<ILocacaoService, LocacaoService>();
 
+
+builder.Services.AddScoped<IPedidoRepository, PedidoRepository>();
+builder.Services.AddScoped<IPedidoService, PedidoService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -14,7 +14,9 @@ namespace Dominio.Entities
         public string Cnh { get; set; }
         public string CnhTipo { get; set; }
         public string? CnhImagem { get; set; }
+
         public virtual ICollection<Locacao> Locacoes { get; set; } = new List<Locacao>();
+        public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
 
         public Entregador(string nome, string cnpj, DateTime dataNascimento, string cnh, string cnhTipo) : base()
         {
