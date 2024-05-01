@@ -4,6 +4,11 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.None);
+builder.Logging.AddFilter("Microsoft.Hosting.Lifetime", LogLevel.None);
+
 // Add services to the container.
 
 builder.Services.AddControllers()

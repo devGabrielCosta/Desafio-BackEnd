@@ -2,6 +2,7 @@
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Dominio.Services
 {
@@ -11,13 +12,20 @@ namespace Dominio.Services
         private IEntregadorService _entregadorService { get; }
         private IMotoService _motoService { get; }
         private INotificationContext _notificationContext { get; }
+        private ILogger _logger { get; }
 
-        public LocacaoService(ILocacaoRepository repository, IEntregadorService entregadorService, IMotoService motoService, INotificationContext notificationContext)
+        public LocacaoService(
+            ILocacaoRepository repository, 
+            IEntregadorService entregadorService, 
+            IMotoService motoService, 
+            INotificationContext notificationContext,
+            ILogger<LocacaoService> logger)
         {
             _repository = repository;
             _entregadorService = entregadorService;
             _motoService = motoService;
             _notificationContext = notificationContext;
+            _logger = logger;
         }
 
         public async Task InsertLocacaoAsync(Locacao locacao)
@@ -25,7 +33,9 @@ namespace Dominio.Services
             var moto = _motoService.GetMotosDisponiveis().FirstOrDefault();
             if (moto == null)
             {
-                _notificationContext.AddNotification("Nenhuma moto disponivel");
+                var message = "Nenhuma moto disponivel";
+                _notificationContext.AddNotification(message);
+                _logger.LogInformation(message);
                 return;
             }
 

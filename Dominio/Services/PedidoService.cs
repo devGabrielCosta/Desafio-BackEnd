@@ -4,6 +4,7 @@ using Dominio.Interfaces.Mensageria;
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Dominio.Services
 {
@@ -13,17 +14,20 @@ namespace Dominio.Services
         private IPublisher<NotificacaoCommand> _publisherNotificacao { get; }
         private IEntregadorService _entregadorService { get; }
         private INotificationContext _notificationContext { get; }
+        private ILogger _logger { get; }
 
         public PedidoService(
             IPedidoRepository repository, 
             IPublisher<NotificacaoCommand> publisherNotificacao,
             IEntregadorService entregadorService,
-            INotificationContext notificationContext)
+            INotificationContext notificationContext,
+            ILogger<PedidoService> logger)
         {
             _repository = repository;
             _publisherNotificacao = publisherNotificacao;
             _entregadorService = entregadorService;
             _notificationContext = notificationContext;
+            _logger = logger;
         }
 
         public Pedido? GetNotificados(Guid id)
@@ -103,6 +107,8 @@ namespace Dominio.Services
 
             pedido.Situacao = Situacao.Entregue;
             this.UpdatePedido(pedido);
+
+            _logger.LogInformation($"PedidoId. {pedido.Id}. Finalizado.");
         }
     }
 }

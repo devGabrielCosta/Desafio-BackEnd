@@ -1,5 +1,6 @@
 ﻿using Dominio.Interfaces.Mensageria;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace Infraestrutura.RabbitMq
 {
@@ -7,9 +8,9 @@ namespace Infraestrutura.RabbitMq
     {   
         private RabbitMq<T> _rabbitMq;
 
-        public RabbitMqPublisherBase(IConfiguration configuration, string queueName)
+        public RabbitMqPublisherBase(IConfiguration configuration, string queueName, ILogger logger)
         {
-            _rabbitMq = new RabbitMq<T>(configuration, queueName);
+            _rabbitMq = new RabbitMq<T>(configuration, queueName, logger);
         }
 
         public void Publish(T message)

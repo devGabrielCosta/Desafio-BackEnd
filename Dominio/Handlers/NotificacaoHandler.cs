@@ -20,8 +20,7 @@ namespace Dominio.Handlers
             var entregadoresDisponiveis = _entregadorRepository.EntregadoresAptosPedido();
             if (!entregadoresDisponiveis.Any())
             {
-                Console.WriteLine("Nenhum Entregador Disponivel");
-                return;
+                throw new Exception("Nenhum entregador disponivel");
             }
 
             var pedido = _pedidoRepository.Get(@event.PedidoId).FirstOrDefault();
