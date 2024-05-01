@@ -1,4 +1,6 @@
-﻿namespace Dominio.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace Dominio.Entities
 {
     public class Entregador : BaseEntity
     {
@@ -9,8 +11,11 @@
         public string CnhTipo { get; set; }
         public string? CnhImagem { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<Locacao> Locacoes { get; set; } = new List<Locacao>();
+        [JsonIgnore]
         public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+        [JsonIgnore]
         public virtual ICollection<Pedido> Notificacoes { get; set; } = new List<Pedido>();
 
         public Entregador(string nome, string cnpj, DateTime dataNascimento, string cnh, string cnhTipo) : base()

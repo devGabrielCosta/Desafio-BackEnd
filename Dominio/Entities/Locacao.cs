@@ -1,4 +1,6 @@
-﻿namespace Dominio.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace Dominio.Entities
 {
     public class Locacao : BaseEntity
     {
@@ -10,7 +12,9 @@
         public DateTime PrevisaoDevolucao { get; set; }
         public bool Ativo { get; set; }
 
+        [JsonIgnore]
         public virtual Moto Moto { get; set; } = null!;
+        [JsonIgnore]
         public virtual Entregador Entregador { get; set; } = null!;
 
         public Locacao(Plano plano, Guid entregadorId) : base()

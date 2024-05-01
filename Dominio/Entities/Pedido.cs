@@ -1,4 +1,6 @@
-﻿namespace Dominio.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace Dominio.Entities
 {
     public class Pedido : BaseEntity
     {
@@ -7,7 +9,11 @@
         public Situacao Situacao { get; set; }
 
         public Guid? EntregadorId { get; set; }
-        public virtual Entregador Entregador { get; set; } = null!;
+
+        [JsonIgnore]
+        public virtual Entregador Entregador { get; set; } = null!; 
+
+        [JsonIgnore]
         public virtual ICollection<Entregador> Notificados { get; set; } = new List<Entregador>();
 
         public Pedido(decimal valor)

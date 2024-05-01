@@ -1,4 +1,6 @@
-﻿namespace Dominio.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace Dominio.Entities
 {
     public class Moto : BaseEntity
     {
@@ -15,6 +17,7 @@
         public string Placa { get; set; }
         public bool Disponivel { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<Locacao> Locacoes { get; set; } = new List<Locacao>();
     }
 }
