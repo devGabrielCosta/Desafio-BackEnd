@@ -67,39 +67,43 @@ namespace Dominio.Services
             await _repository.InsertAsync(locacao);
         }
 
-        public object ConsultarDevolucao(Guid id, DateTime previsaoDevolucao)
+        public decimal ConsultarDevolucao(Guid id, DateTime previsaoDevolucao)
         {
             var locacao = _repository.Get(id).FirstOrDefault();
             if (locacao == null)
             {
                 _notificationContext.AddNotification("Locação não encontrada");
-                return null;
+                return 0;
             }
 
             var plano = locacao.Plano;
 
             decimal preco = 0;
 
-            if (previsaoDevolucao == locacao.Termino)
+            var previsaoDate = previsaoDevolucao.Date;
+            var inicioDate = locacao.Inicio.Date;
+            var terminoDate = locacao.Termino.Date;
+
+            if (previsaoDate == terminoDate)
             {
-                preco = ((locacao.Termino - locacao.Inicio).Days + 1) * PrecoPlano(plano);
+                preco = ((terminoDate - inicioDate).Days + 1) * PrecoPlano(plano);
             }
-            else if (previsaoDevolucao < locacao.Termino)
+            else if (previsaoDate < terminoDate)
             {
-                preco = ((previsaoDevolucao - locacao.Inicio).Days + 1) * PrecoPlano(plano);
-                preco += (((locacao.Termino - previsaoDevolucao).Days + 1) * PrecoPlano(plano)) * MultaPlano(plano);
+                preco = ((previsaoDate - inicioDate).Days + 1) * PrecoPlano(plano);
+                preco += (((terminoDate - previsaoDate).Days) * PrecoPlano(plano)) * MultaPlano(plano);
             }
-            else if(previsaoDevolucao > locacao.Termino)
+            else if(previsaoDate > terminoDate)
             {
-                preco = ((locacao.Termino - locacao.Inicio).Days + 1) * PrecoPlano(plano);
-                preco += ((previsaoDevolucao - locacao.Termino).Days) * 50;
+                preco = ((terminoDate - inicioDate).Days + 1) * PrecoPlano(plano);
+                preco += ((previsaoDate - terminoDate).Days) * 50;
             }
 
             locacao.PrevisaoDevolucao = previsaoDevolucao;
 
             _repository.Update(locacao);
 
-            return new { Preco = preco};
+            return preco;
 
         }
 
@@ -118,11 +122,11 @@ namespace Dominio.Services
         private decimal MultaPlano(Plano plano)
         {
             if (plano is Plano.A)
-                return 1.2m;
+                return 0.2m;
             else if (plano is Plano.B)
-                return 1.4m;
+                return 0.4m;
             else if (plano is Plano.C)
-                return 1.6m;
+                return 0.6m;
 
             return 0;
         }

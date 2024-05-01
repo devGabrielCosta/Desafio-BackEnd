@@ -38,12 +38,12 @@ namespace Aplicacao.Controllers
         [HttpPost("PrevisaoDevolucao/{id}")]
         public ActionResult<ResponseModel<object?>> UpdateDevolucao(UpdatePrevisaoDevolucao request, Guid id)
         {
-            var resposta = _service.ConsultarDevolucao(id, request.PrevisaoDevolucao);
+            var preco = _service.ConsultarDevolucao(id, request.PrevisaoDevolucao);
 
             if (_notificationContext.HasNotifications)
-                return BadRequest(new ResponseModel<object?>(resposta, _notificationContext.Notifications));
+                return BadRequest(new ResponseModel<object?>(preco, _notificationContext.Notifications));
             else
-                return Ok(new ResponseModel<object?>(resposta));
+                return Ok(new ResponseModel<object?>(new  { Preco = preco } ));
 
         }
     }

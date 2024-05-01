@@ -54,6 +54,11 @@ namespace Dominio.Services
         public Entregador UpdateCnhImagemEntregador(Guid id, string imagem)
         {
             var entregador = _repository.Get(id).FirstOrDefault();
+            if (entregador == null)
+            {
+                _notificationContext.AddNotification("Entregador não encontrado");
+                return null;
+            }
 
             _logger.LogInformation($"Imagem do entregadorId{entregador.Id} atualizada de {entregador.CnhImagem} para {imagem}");
 

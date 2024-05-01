@@ -101,7 +101,7 @@ namespace Dominio.Services
 
             if (pedido.Situacao != Situacao.Aceito)
             {
-                _notificationContext.AddNotification("Pedido ainda não foi aceito");
+                _notificationContext.AddNotification("Pedido ainda não foi aceito ou já foi entregue");
                 return;
             }
 

@@ -58,6 +58,9 @@ namespace Aplicacao.Controllers
             var url = await UploadImage(imagem);
             var entregador = _service.UpdateCnhImagemEntregador(id, url);
 
+            if (_notificationContext.HasNotifications)
+                return BadRequest(new ResponseModel<Entregador?>(null, _notificationContext.Notifications));
+
             return Ok(new ResponseModel<Entregador>(entregador));
         }
 
