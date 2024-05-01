@@ -2,6 +2,7 @@
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
+using Dominio.Utilities;
 using Microsoft.Extensions.Logging;
 
 namespace Dominio.Services
@@ -76,59 +77,11 @@ namespace Dominio.Services
                 return 0;
             }
 
-            var plano = locacao.Plano;
-
-            decimal preco = 0;
-
-            var previsaoDate = previsaoDevolucao.Date;
-            var inicioDate = locacao.Inicio.Date;
-            var terminoDate = locacao.Termino.Date;
-
-            if (previsaoDate == terminoDate)
-            {
-                preco = ((terminoDate - inicioDate).Days + 1) * PrecoPlano(plano);
-            }
-            else if (previsaoDate < terminoDate)
-            {
-                preco = ((previsaoDate - inicioDate).Days + 1) * PrecoPlano(plano);
-                preco += (((terminoDate - previsaoDate).Days) * PrecoPlano(plano)) * MultaPlano(plano);
-            }
-            else if(previsaoDate > terminoDate)
-            {
-                preco = ((terminoDate - inicioDate).Days + 1) * PrecoPlano(plano);
-                preco += ((previsaoDate - terminoDate).Days) * 50;
-            }
-
             locacao.PrevisaoDevolucao = previsaoDevolucao;
 
             _repository.Update(locacao);
 
-            return preco;
-
-        }
-
-        private int PrecoPlano(Plano plano)
-        {
-            if (plano is Plano.A)
-                return 30;
-            else if (plano is Plano.B)
-                return 28;
-            else if (plano is Plano.C)
-                return 22;
-
-            return 0;
-        }
-
-        private decimal MultaPlano(Plano plano)
-        {
-            if (plano is Plano.A)
-                return 0.2m;
-            else if (plano is Plano.B)
-                return 0.4m;
-            else if (plano is Plano.C)
-                return 0.6m;
-
-            return 0;
+            return CalculoValorLocacaoUtility.CalcularValor(locacao);
         }
     }
 

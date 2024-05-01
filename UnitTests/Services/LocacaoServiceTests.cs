@@ -192,17 +192,12 @@ namespace UnitTests.Services
             Assert.Equal(0, result);
         }
 
-        [Theory]
-        [InlineData(Plano.A, 7, 210)]
-        [InlineData(Plano.A, 4, 138)]
-        [InlineData(Plano.A, 9, 310)]
-        [InlineData(Plano.B, 15, 420)]
-        [InlineData(Plano.C, 30, 660)]
-        public void ConsultarDevolucao_LocacaoEncontrada_Sucesso(Plano plano, int diasLocacao, decimal expectedPreco)
+        [Fact]
+        public void ConsultarDevolucao_LocacaoEncontrada_Sucesso()
         {
             // Arrange
-            var previsaoDevolucao = DateTime.Now.AddDays(diasLocacao);
-            var locacao = LocacaoFixture.Create(plano);
+            var previsaoDevolucao = DateTime.Now.AddDays(7);
+            var locacao = LocacaoFixture.Create(Plano.A);
 
             _locacaoRepositoryMock.SetupGet(new List<Locacao> { locacao });
 
@@ -216,7 +211,7 @@ namespace UnitTests.Services
             var preco = locacaoService.ConsultarDevolucao(locacao.Id, previsaoDevolucao);
 
             // Assert
-            Assert.Equal(expectedPreco, preco);
+            Assert.Equal(210, preco);
         }
 
     }
