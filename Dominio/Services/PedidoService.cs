@@ -51,20 +51,20 @@ namespace Dominio.Services
             _repository.Update(pedido);
         }
 
-        public bool AceitarPedido(Guid id, Guid entregadorId)
+        public void AceitarPedido(Guid id, Guid entregadorId)
         {
             var entregador = _entregadorService.Get(entregadorId);
             if(entregador == null)
             {
                 _notificationContext.AddNotification("Entregador não encontrado");
-                return false;
+                return;
             }
 
             var pedido = this.GetNotificados(id);
             if(pedido == null)
             {
                 _notificationContext.AddNotification("Pedido não encontrado");
-                return false;
+                return;
             }
 
             var entregadorNaoFoiNotificado = !pedido.Notificados.Any(e => e.Id == entregadorId);
@@ -72,42 +72,37 @@ namespace Dominio.Services
             if (entregadorNaoFoiNotificado)
             {
                 _notificationContext.AddNotification("Entregador não recebeu notificação");
-                return false;
+                return;
             }
             if(pedidoNaoDisponivel)
             {
                 _notificationContext.AddNotification("Pedido não está com status Disponivel");
-                return false;
+                return;
             }
 
             pedido.Situacao = Situacao.Aceito;
             pedido.Entregador = entregador;
             this.UpdatePedido(pedido);
-
-            return true;
-
         }
 
-        public bool FinalizarPedido(Guid id, Guid entregadorId)
+        public void FinalizarPedido(Guid id, Guid entregadorId)
         {
             var pedido = this.Get(id);
 
             if (pedido.EntregadorId != entregadorId)
             {
                 _notificationContext.AddNotification("Pedido não pertence ao entregador");
-                return false;
+                return;
             }
 
             if (pedido.Situacao != Situacao.Aceito)
             {
                 _notificationContext.AddNotification("Pedido ainda não foi aceito");
-                return false;
+                return;
             }
 
             pedido.Situacao = Situacao.Entregue;
             this.UpdatePedido(pedido);
-
-            return true;
         }
     }
 }

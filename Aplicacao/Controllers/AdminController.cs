@@ -1,4 +1,5 @@
 using Aplicacao.Response;
+using Dominio.Entities;
 using Dominio.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,18 +17,18 @@ namespace Aplicacao.Controllers
         }
 
         [HttpGet]
-        public ActionResult<ResponseModel> Get()
+        public ActionResult<ResponseModel<IEnumerable<Admin>>> Get()
         {
             var admins = _service.Get();
-            return Ok(new ResponseModel(admins));
+            return Ok(new ResponseModel<IEnumerable<Admin>>(admins));
         }
 
         [HttpPost]
-        public async Task<ActionResult<ResponseModel>> Insert()
+        public async Task<ActionResult<ResponseModel<Admin>>> Insert()
         {
             var admin = await _service.CreateAdminAsync();
 
-            return CreatedAtAction(nameof(Insert), new ResponseModel(admin));
+            return CreatedAtAction(nameof(Insert), new ResponseModel<Admin>(admin));
         }
     }
 }

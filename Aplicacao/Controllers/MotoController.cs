@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Aplicacao.Mappers;
 using Dominio.Interfaces.Notification;
 using Aplicacao.Response;
+using Dominio.Entities;
 
 namespace Aplicacao.Controllers
 {
@@ -21,45 +22,45 @@ namespace Aplicacao.Controllers
         }
 
         [HttpGet("{placa}")]
-        public ActionResult<ResponseModel> Get(string placa = "")
+        public ActionResult<ResponseModel<IEnumerable<Moto>>> Get(string placa = "")
         {
             var motos = _service.GetByPlaca(placa);
-            return Ok(new ResponseModel(motos));
+            return Ok(new ResponseModel<IEnumerable<Moto>>(motos));
         }
 
         [HttpPost]
-        public async Task<ActionResult<ResponseModel>> Insert(CreateMoto request)
+        public async Task<ActionResult<ResponseModel<Moto?>>> Insert(CreateMoto request)
         {
             var moto = request.Mapper();
 
             await _service.InsertMotoAsync(moto);
 
             if (_notificationContext.HasNotifications)
-                return BadRequest(new ResponseModel(null, _notificationContext.Notifications));
+                return BadRequest(new ResponseModel<Moto?>(null, _notificationContext.Notifications));
 
-            return CreatedAtAction(nameof(Insert), new ResponseModel(moto));
+            return CreatedAtAction(nameof(Insert), new ResponseModel<Moto>(moto));
         }
         
         [HttpPut("{id}")]
-        public ActionResult<ResponseModel> Update(UpdateMoto request, Guid id)
+        public ActionResult<ResponseModel<Moto?>> Update(UpdateMoto request, Guid id)
         {
             var moto = _service.UpdatePlacaMoto(id, request.Placa);
 
             if (_notificationContext.HasNotifications)
-                return BadRequest(new ResponseModel(null, _notificationContext.Notifications));
+                return BadRequest(new ResponseModel<Moto?>(null, _notificationContext.Notifications));
 
-            return Ok(new ResponseModel(moto));
+            return Ok(new ResponseModel<Moto?>(moto));
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<ResponseModel> Delete(Guid id)
+        public ActionResult<ResponseModel<object?>> Delete(Guid id)
         {
             _service.DeleteMoto(id);
 
             if (_notificationContext.HasNotifications)
-                return BadRequest(new ResponseModel(null, _notificationContext.Notifications));
+                return BadRequest(new ResponseModel<object?>(null, _notificationContext.Notifications));
 
-            return Ok();
+            return Ok(new ResponseModel<object?>(null));
         }
     }
 }

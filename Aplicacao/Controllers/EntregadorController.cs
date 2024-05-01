@@ -1,6 +1,7 @@
 ﻿using Aplicacao.Mappers;
 using Aplicacao.Requests;
 using Aplicacao.Response;
+using Dominio.Entities;
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -23,27 +24,27 @@ namespace Aplicacao.Controllers
         }
 
         [HttpGet]
-        public  ActionResult<ResponseModel> Get()
+        public  ActionResult<ResponseModel<IEnumerable<Entregador>>> Get()
         {
             var entregadores = _service.Get();
-            return Ok(new ResponseModel(entregadores));
+            return Ok(new ResponseModel<IEnumerable<Entregador>>(entregadores));
         }
 
         [HttpPost]
-        public async Task<ActionResult<ResponseModel>> Insert(CreateEntregador request)
+        public async Task<ActionResult<ResponseModel<Entregador?>>> Insert(CreateEntregador request)
         {   
             var entregador = request.Mapper();
 
             await _service.InsertEntregadorAsync(entregador);
 
             if (_notificationContext.HasNotifications)
-                return BadRequest(new ResponseModel(null, _notificationContext.Notifications));
+                return BadRequest(new ResponseModel<Entregador?>(null, _notificationContext.Notifications));
 
-            return CreatedAtAction(nameof(Insert), new ResponseModel(entregador));
+            return CreatedAtAction(nameof(Insert), new ResponseModel<Entregador>(entregador));
         }
 
         [HttpPut("{id}/imagemCnh")]
-        public async Task<ActionResult<ResponseModel>> UpdateImage(IFormFile imagem, Guid id)
+        public async Task<ActionResult<ResponseModel<Entregador?>>> UpdateImage(IFormFile imagem, Guid id)
         {
             if (imagem.Length <= 0)
                 _notificationContext.AddNotification("Necessário enviar uma imagem");
@@ -52,12 +53,12 @@ namespace Aplicacao.Controllers
                 _notificationContext.AddNotification("A imagem deve ser do tipo png ou bmp");
 
             if (_notificationContext.HasNotifications)
-                return BadRequest(new ResponseModel(null, _notificationContext.Notifications));
+                return BadRequest(new ResponseModel<Entregador?>(null, _notificationContext.Notifications));
 
             var url = await UploadImage(imagem);
             var entregador = _service.UpdateCnhImagemEntregador(id, url);
 
-            return Ok(new ResponseModel(entregador));
+            return Ok(new ResponseModel<Entregador>(entregador));
         }
 
         private async Task<string> UploadImage(IFormFile imagem)

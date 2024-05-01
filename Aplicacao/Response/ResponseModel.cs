@@ -1,16 +1,16 @@
 ﻿namespace Aplicacao.Response
 {
-    public class ResponseModel
+    public class ResponseModel<T>
     {
-        public object Data { get; set; }
-        public List<string>? Mensagens{ get; set; }
+        public T Data { get; set; }
+        public List<string>? Mensagens { get; set; }
 
-        public ResponseModel(object data, List<string> mensagens)
+        public ResponseModel(T data, List<string> mensagens)
         {
             Data = data;
             Mensagens = mensagens;
         }
-        public ResponseModel(object data)
+        public ResponseModel(T data)
         {
             Data = data;
             Mensagens = default;

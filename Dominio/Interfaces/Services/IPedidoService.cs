@@ -6,7 +6,7 @@ namespace Dominio.Interfaces.Services
     {
         Pedido? GetNotificados(Guid id);
         Task<Pedido> InsertPedidoAsync(Pedido pedido);
-        bool AceitarPedido(Guid id, Guid entregadorId);
-        bool FinalizarPedido(Guid id, Guid entregadorId);
+        void AceitarPedido(Guid id, Guid entregadorId);
+        void FinalizarPedido(Guid id, Guid entregadorId);
     }
 }

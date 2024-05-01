@@ -1,6 +1,7 @@
 ﻿using Aplicacao.Mappers;
 using Aplicacao.Requests;
 using Aplicacao.Response;
+using Dominio.Entities;
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -21,28 +22,28 @@ namespace Aplicacao.Controllers
         }
 
         [HttpPost("")]
-        public async Task<ActionResult<ResponseModel>> Insert(CreateLocacao request)
+        public async Task<ActionResult<ResponseModel<Locacao?>>> Insert(CreateLocacao request)
         {
-            var locacao = request.Mapper();             
+            var locacao = request.Mapper();
 
             await _service.InsertLocacaoAsync(locacao);
 
             if (_notificationContext.HasNotifications)
-                return BadRequest(new ResponseModel(null, _notificationContext.Notifications));
+                return BadRequest(new ResponseModel<Locacao?>(null, _notificationContext.Notifications));
 
-            return CreatedAtAction(nameof(Insert), new ResponseModel(locacao));    
+            return CreatedAtAction(nameof(Insert), new ResponseModel<Locacao>(locacao));
 
         }
 
         [HttpPost("PrevisaoDevolucao/{id}")]
-        public ActionResult<ResponseModel> UpdateDevolucao(UpdatePrevisaoDevolucao request, Guid id)
+        public ActionResult<ResponseModel<object?>> UpdateDevolucao(UpdatePrevisaoDevolucao request, Guid id)
         {
             var resposta = _service.ConsultarDevolucao(id, request.PrevisaoDevolucao);
 
             if (_notificationContext.HasNotifications)
-                return BadRequest(new ResponseModel(resposta, _notificationContext.Notifications));
+                return BadRequest(new ResponseModel<object?>(resposta, _notificationContext.Notifications));
             else
-                return Ok(new ResponseModel(resposta));
+                return Ok(new ResponseModel<object?>(resposta));
 
         }
     }
