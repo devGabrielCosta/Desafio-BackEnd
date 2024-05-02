@@ -1,16 +1,19 @@
-﻿using Aplicacao.Mappers;
+﻿using Aplicacao.Configuration;
+using Aplicacao.Mappers;
 using Aplicacao.Requests;
 using Aplicacao.Response;
 using Dominio.Entities;
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Aplicacao.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class LocacaoController : ControllerBase
+    public class LocacaoController : AbstractController
     {
         private ILocacaoService _service { get; }
         private INotificationContext _notificationContext { get; }
@@ -22,9 +25,11 @@ namespace Aplicacao.Controllers
         }
 
         [HttpPost("")]
+        [Authorize(Roles = Roles.Entregador)]
         public async Task<ActionResult<ResponseModel<Locacao?>>> Insert(CreateLocacao request)
         {
             var locacao = request.Mapper();
+            locacao.EntregadorId = LoggerUserGuid();
 
             await _service.InsertLocacaoAsync(locacao);
 
@@ -36,6 +41,7 @@ namespace Aplicacao.Controllers
         }
 
         [HttpPost("PrevisaoDevolucao/{id}")]
+        [Authorize(Roles = Roles.Entregador)]
         public ActionResult<ResponseModel<object?>> UpdateDevolucao(UpdatePrevisaoDevolucao request, Guid id)
         {
             var preco = _service.ConsultarDevolucao(id, request.PrevisaoDevolucao);

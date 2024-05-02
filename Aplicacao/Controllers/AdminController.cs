@@ -7,7 +7,7 @@ namespace Aplicacao.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class AdminController : ControllerBase
+    public class AdminController : AbstractController
     {   
         private IAdminService _service{ get; }
 

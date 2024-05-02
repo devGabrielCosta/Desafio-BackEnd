@@ -1,16 +1,18 @@
+using Aplicacao.Configuration;
 using Aplicacao.Mappers;
 using Aplicacao.Requests;
 using Aplicacao.Response;
 using Dominio.Entities;
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aplicacao.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class PedidoController : ControllerBase
+    public class PedidoController : AbstractController
     {   
         private IPedidoService _service { get; }
         private INotificationContext _notificationContext { get; }
@@ -22,6 +24,7 @@ namespace Aplicacao.Controllers
         }
 
         [HttpGet("{id}/Notificados")]
+        [Authorize(Roles = Roles.Admin)]
         public ActionResult<ResponseModel<IEnumerable<Entregador>>> GetNoficados(Guid id)
         {
             var entregadores = _service.GetNotificados(id)?.Notificados;
@@ -30,6 +33,7 @@ namespace Aplicacao.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ResponseModel<Pedido?>>> Insert(CreatePedido request)
         {
             var pedido = request.Mapper();
@@ -40,9 +44,10 @@ namespace Aplicacao.Controllers
         }
 
         [HttpPost("{id}/Aceitar")]
-        public ActionResult<ResponseModel<object?>> AceitarPedido(Guid id, Guid entregadorId)
+        [Authorize(Roles = Roles.Entregador)]
+        public ActionResult<ResponseModel<object?>> AceitarPedido(Guid id)
         {
-            _service.AceitarPedido(id, entregadorId);
+            _service.AceitarPedido(id, LoggerUserGuid());
 
             if (_notificationContext.HasNotifications)
                 return BadRequest(new ResponseModel<object?>(null, _notificationContext.Notifications));
@@ -51,9 +56,10 @@ namespace Aplicacao.Controllers
         }
 
         [HttpPost("{id}/Finalizar")]
-        public ActionResult<ResponseModel<object?>> FinalizarPedido(Guid id, Guid entregadorId)
+        [Authorize(Roles = Roles.Entregador)]
+        public ActionResult<ResponseModel<object?>> FinalizarPedido(Guid id)
         {
-            _service.FinalizarPedido(id, entregadorId);
+            _service.FinalizarPedido(id, LoggerUserGuid());
 
             if (_notificationContext.HasNotifications)
                 return BadRequest(new ResponseModel<object?>(null, _notificationContext.Notifications));

@@ -1,3 +1,4 @@
+using Aplicacao.Configuration;
 using Dominio;
 using Infraestrutura;
 using System.Text.Json.Serialization;
@@ -9,7 +10,7 @@ builder.Logging.AddConsole();
 builder.Logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.None);
 builder.Logging.AddFilter("Microsoft.Hosting.Lifetime", LogLevel.None);
 
-// Add services to the container.
+builder.Services.AddJwtAuthentication(builder);
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -21,7 +22,7 @@ builder.Services.AddControllers()
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGenWithJWTAuth();
 
 builder.Services.AddRepositories();
 builder.Services.AddServices();

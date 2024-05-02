@@ -5,12 +5,14 @@ using Aplicacao.Mappers;
 using Dominio.Interfaces.Notification;
 using Aplicacao.Response;
 using Dominio.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Aplicacao.Configuration;
 
 namespace Aplicacao.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class MotoController : ControllerBase
+    public class MotoController : AbstractController
     {
         private IMotoService _service { get; }
         private INotificationContext _notificationContext { get; }
@@ -22,6 +24,7 @@ namespace Aplicacao.Controllers
         }
 
         [HttpGet("{placa}")]
+        [Authorize(Roles = Roles.Admin)]
         public ActionResult<ResponseModel<IEnumerable<Moto>>> Get(string placa = "")
         {
             var motos = _service.GetByPlaca(placa);
@@ -29,6 +32,7 @@ namespace Aplicacao.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ResponseModel<Moto?>>> Insert(CreateMoto request)
         {
             var moto = request.Mapper();
@@ -42,6 +46,7 @@ namespace Aplicacao.Controllers
         }
         
         [HttpPut("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public ActionResult<ResponseModel<Moto?>> Update(UpdateMoto request, Guid id)
         {
             var moto = _service.UpdatePlacaMoto(id, request.Placa);
@@ -53,6 +58,7 @@ namespace Aplicacao.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = Roles.Admin)]
         public ActionResult<ResponseModel<object?>> Delete(Guid id)
         {
             _service.DeleteMoto(id);

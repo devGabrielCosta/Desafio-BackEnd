@@ -9,7 +9,7 @@ namespace Aplicacao.Mappers
         {
             return new Locacao(
                 request.Plano,
-                request.EntregadorId
+                Guid.Empty
             );
         }
     }
