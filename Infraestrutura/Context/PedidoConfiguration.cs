@@ -18,7 +18,7 @@ namespace Infraestrutura.Context
                 .IsRequired();
 
             builder
-                .Property("Valor")
+                .Property("ValorDaCorrida")
                 .HasPrecision(5,2)
                 .IsRequired();
 

@@ -8,7 +8,7 @@ namespace Aplicacao.Mappers
         public static Pedido Mapper(this CreatePedido request)
         {
             return new Pedido(
-                request.Valor
+                request.ValorDaCorrida
             );
         }
     }

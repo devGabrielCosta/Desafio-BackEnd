@@ -4,7 +4,7 @@ namespace Aplicacao.Requests
 {
     public class CreatePedido
     {
-        [Required(ErrorMessage = "Valor é obrigatório")]
-        public decimal Valor { get; set; }
+        [Required(ErrorMessage = "Valor da corrida é obrigatório")]
+        public decimal ValorDaCorrida { get; set; }
     }
 }
