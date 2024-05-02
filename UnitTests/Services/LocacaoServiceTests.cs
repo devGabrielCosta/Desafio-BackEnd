@@ -187,7 +187,7 @@ namespace UnitTests.Services
                                                     _loggerMock.Object);
 
             // Act
-            var result = locacaoService.ConsultarDevolucao(locacao.Id, DateTime.Now, entregador.Id);
+            var result = locacaoService.InformarDevolucao(locacao.Id, DateTime.Now, entregador.Id);
 
             // Assert
             _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.LOCACAO_NAO_ENCONTRADA), Times.Once);
@@ -210,10 +210,35 @@ namespace UnitTests.Services
                                                     _loggerMock.Object);
 
             // Act
-            var result = locacaoService.ConsultarDevolucao(locacao.Id, DateTime.Now, entregador.Id);
+            var result = locacaoService.InformarDevolucao(locacao.Id, DateTime.Now, entregador.Id);
 
             // Assert
             _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.LOCACAO_ENTREGADOR_SEM_PERMISSAO), Times.Once);
+            Assert.Equal(0, result);
+        }
+
+        [Fact]
+        public void ConsultarDevolucao_LocacaoInativa_NotificaENaoRetornaPreco()
+        {
+            // Arrange
+            var locacao = LocacaoFixture.Create();
+            locacao.Ativo = false;
+            var entregador = EntregadorFixture.Create();
+            locacao.EntregadorId = entregador.Id;
+
+            _locacaoRepositoryMock.SetupGet(new List<Locacao> { locacao });
+
+            var locacaoService = new LocacaoService(_locacaoRepositoryMock.Object,
+                                                    _entregadorServiceMock.Object,
+                                                    _motoServiceMock.Object,
+                                                    _notificationContextMock.Object,
+                                                    _loggerMock.Object);
+
+            // Act
+            var result = locacaoService.InformarDevolucao(locacao.Id, DateTime.Now, entregador.Id);
+
+            // Assert
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.LOCACAO_INATIVA), Times.Once);
             Assert.Equal(0, result);
         }
 
@@ -235,7 +260,7 @@ namespace UnitTests.Services
                                                     _loggerMock.Object);
 
             // Act
-            var preco = locacaoService.ConsultarDevolucao(locacao.Id, previsaoDevolucao, entregador.Id);
+            var preco = locacaoService.InformarDevolucao(locacao.Id, previsaoDevolucao, entregador.Id);
 
             // Assert
             Assert.Equal(210, preco);

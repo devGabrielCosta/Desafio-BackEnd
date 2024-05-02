@@ -37,7 +37,7 @@ namespace Infraestrutura.Context
                 .IsRequired();
 
             builder
-                .Property<DateTime>("PrevisaoDevolucao")
+                .Property<DateTime>("Devolucao")
                 .HasColumnType("Date")
                 .IsRequired();
 

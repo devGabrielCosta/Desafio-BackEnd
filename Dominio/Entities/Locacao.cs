@@ -9,7 +9,7 @@ namespace Dominio.Entities
         public Guid MotoId { get; set; }
         public DateTime Inicio { get; set; }
         public DateTime Termino { get; set; }
-        public DateTime PrevisaoDevolucao { get; set; }
+        public DateTime Devolucao { get; set; }
         public bool Ativo { get; set; }
 
         [JsonIgnore]

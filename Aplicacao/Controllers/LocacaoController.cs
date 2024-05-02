@@ -50,7 +50,7 @@ namespace Aplicacao.Controllers
         }
 
         /// <summary>
-        /// Atualiza data da previsão de devolução e retorna preço
+        /// Atualiza data de devolução, finaliza a locação e retorna preço
         /// </summary>
         /// <response code="200">Retorna preço</response>
         /// <response code="400">Algum dado enviado está incorreto</response>
@@ -58,11 +58,11 @@ namespace Aplicacao.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ResponseModel<object>), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ActionResult), StatusCodes.Status403Forbidden)]
-        [HttpPatch("{id}/PrevisaoDevolucao")]
+        [HttpPatch("{id}/Devolucao")]
         [Authorize(Roles = Roles.Entregador)]
-        public ActionResult<ResponseModel<PrevisaoLocacao>> UpdateDevolucao(UpdatePrevisaoDevolucao request, Guid id)
+        public ActionResult<ResponseModel<PrevisaoLocacao>> InformarDevolucao(UpdatePrevisaoDevolucao request, Guid id)
         {
-            var preco = _service.ConsultarDevolucao(id, request.PrevisaoDevolucao, LoggerUserGuid());
+            var preco = _service.InformarDevolucao(id, request.PrevisaoDevolucao, LoggerUserGuid());
 
             if (_notificationContext.HasNotifications)
                 return BadRequest(new ResponseModel<PrevisaoLocacao>(null, _notificationContext.Notifications));

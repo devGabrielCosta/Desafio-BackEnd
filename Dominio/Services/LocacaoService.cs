@@ -67,7 +67,7 @@ namespace Dominio.Services
             await _repository.InsertAsync(locacao);
         }
 
-        public decimal ConsultarDevolucao(Guid id, DateTime previsaoDevolucao, Guid entregadorId)
+        public decimal InformarDevolucao(Guid id, DateTime previsaoDevolucao, Guid entregadorId)
         {
             var locacao = _repository.Get(id).FirstOrDefault();
             if (locacao == null)
@@ -75,13 +75,19 @@ namespace Dominio.Services
                 _notificationContext.AddNotification(ErrorNotifications.LOCACAO_NAO_ENCONTRADA);
                 return 0;
             }
-            if(entregadorId != locacao.EntregadorId)
+            if (entregadorId != locacao.EntregadorId)
             {
                 _notificationContext.AddNotification(ErrorNotifications.LOCACAO_ENTREGADOR_SEM_PERMISSAO);
                 return 0;
             }
+            if (!locacao.Ativo)
+            {
+                _notificationContext.AddNotification(ErrorNotifications.LOCACAO_INATIVA);
+                return 0;
+            }
 
-            locacao.PrevisaoDevolucao = previsaoDevolucao;
+            locacao.Devolucao = previsaoDevolucao;
+            locacao.Ativo = false;
 
             _repository.Update(locacao);
 

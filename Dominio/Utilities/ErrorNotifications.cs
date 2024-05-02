@@ -27,6 +27,7 @@ namespace Dominio.Utilities
         public const string PEDIDO_NAO_DISPONIVEL = "Pedido não está com status Disponivel";
         public const string PEDIDO_ENTREGADOR_INCORRETO = "Pedido não pertence ao entregador";
         public const string PEDIDO_NAO_ACEITO_ENTREGUE = "Pedido ainda não foi aceito ou já foi entregue";
+        public const string LOCACAO_INATIVA = "A locação já foi finalizada";
     }
 
 }

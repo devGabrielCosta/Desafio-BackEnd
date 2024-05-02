@@ -11,7 +11,7 @@ namespace UnitTests.Utilities
         {
             // Arrange
             var locacao = LocacaoFixture.Create(Plano.A);
-            locacao.PrevisaoDevolucao = DateTime.Now.AddDays(7);
+            locacao.Devolucao = DateTime.Now.AddDays(7);
 
             // Act
             var valorCalculado = CalculoValorLocacaoUtility.CalcularValor(locacao);
@@ -25,7 +25,7 @@ namespace UnitTests.Utilities
         {
             // Arrange
             var locacao = LocacaoFixture.Create(Plano.A);
-            locacao.PrevisaoDevolucao = DateTime.Now.AddDays(4);
+            locacao.Devolucao = DateTime.Now.AddDays(4);
 
             // Act
             var valorCalculado = CalculoValorLocacaoUtility.CalcularValor(locacao);
@@ -39,7 +39,7 @@ namespace UnitTests.Utilities
         {
             // Arrange
             var locacao = LocacaoFixture.Create(Plano.A);
-            locacao.PrevisaoDevolucao = DateTime.Now.AddDays(9);
+            locacao.Devolucao = DateTime.Now.AddDays(9);
 
             // Act
             var valorCalculado = CalculoValorLocacaoUtility.CalcularValor(locacao);

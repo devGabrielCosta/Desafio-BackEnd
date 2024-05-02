@@ -10,14 +10,14 @@ namespace Dominio.Utilities
         {
             IPlano plano = GetPlano(locacao.Plano);
 
-            var previsaoDevolucao = locacao.PrevisaoDevolucao.Date;
+            var devolucao = locacao.Devolucao.Date;
             var inicioLocacao = locacao.Inicio.Date;
             var terminoLocacao = locacao.Termino.Date;
 
-            if (previsaoDevolucao < terminoLocacao)
-                return CalcularValorAntesDoPrazo(inicioLocacao, terminoLocacao, previsaoDevolucao, plano);
-            else if (previsaoDevolucao > terminoLocacao)
-                return CalcularValorDepoisDoPrazo(inicioLocacao, terminoLocacao, previsaoDevolucao, plano);
+            if (devolucao < terminoLocacao)
+                return CalcularValorAntesDoPrazo(inicioLocacao, terminoLocacao, devolucao, plano);
+            else if (devolucao > terminoLocacao)
+                return CalcularValorDepoisDoPrazo(inicioLocacao, terminoLocacao, devolucao, plano);
             
             return CalcularValorPrazo(inicioLocacao, terminoLocacao, plano);
         }
@@ -27,17 +27,17 @@ namespace Dominio.Utilities
             return ((termino - inicio).Days + 1) * plano.Preco;
         }
 
-        private static decimal CalcularValorAntesDoPrazo(DateTime inicio, DateTime termino, DateTime previsaoDevolucao, IPlano plano)
+        private static decimal CalcularValorAntesDoPrazo(DateTime inicio, DateTime termino, DateTime devolucao, IPlano plano)
         {
-            var preco = ((previsaoDevolucao - inicio).Days + 1) * plano.Preco;
-            preco += ((termino - previsaoDevolucao).Days) * plano.Preco * plano.Multa;
+            var preco = ((devolucao - inicio).Days + 1) * plano.Preco;
+            preco += ((termino - devolucao).Days) * plano.Preco * plano.Multa;
             return preco;
         }
 
-        private static decimal CalcularValorDepoisDoPrazo(DateTime inicio, DateTime termino, DateTime previsaoDevolucao, IPlano plano)
+        private static decimal CalcularValorDepoisDoPrazo(DateTime inicio, DateTime termino, DateTime devolucao, IPlano plano)
         {
             var preco = ((termino - inicio).Days + 1) * plano.Preco;
-            preco += ((previsaoDevolucao - termino).Days) * MULTA_APOS_TERMINO;
+            preco += ((devolucao - termino).Days) * MULTA_APOS_TERMINO;
             return preco;
         }
 
