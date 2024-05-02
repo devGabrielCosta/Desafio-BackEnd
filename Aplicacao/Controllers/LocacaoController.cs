@@ -44,7 +44,7 @@ namespace Aplicacao.Controllers
         [Authorize(Roles = Roles.Entregador)]
         public ActionResult<ResponseModel<PrevisaoLocacao>> UpdateDevolucao(UpdatePrevisaoDevolucao request, Guid id)
         {
-            var preco = _service.ConsultarDevolucao(id, request.PrevisaoDevolucao);
+            var preco = _service.ConsultarDevolucao(id, request.PrevisaoDevolucao, LoggerUserGuid());
 
             if (_notificationContext.HasNotifications)
                 return BadRequest(new ResponseModel<PrevisaoLocacao>(null, _notificationContext.Notifications));

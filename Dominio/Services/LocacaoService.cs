@@ -68,12 +68,17 @@ namespace Dominio.Services
             await _repository.InsertAsync(locacao);
         }
 
-        public decimal ConsultarDevolucao(Guid id, DateTime previsaoDevolucao)
+        public decimal ConsultarDevolucao(Guid id, DateTime previsaoDevolucao, Guid entregadorId)
         {
             var locacao = _repository.Get(id).FirstOrDefault();
             if (locacao == null)
             {
                 _notificationContext.AddNotification("Locação não encontrada");
+                return 0;
+            }
+            if(entregadorId != locacao.EntregadorId)
+            {
+                _notificationContext.AddNotification("Locação não pertence ao entregador");
                 return 0;
             }
 

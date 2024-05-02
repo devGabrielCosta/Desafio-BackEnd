@@ -170,12 +170,13 @@ namespace UnitTests.Services
             _locacaoRepositoryMock.Verify(r => r.InsertAsync(locacao), Times.Never);
         }
 
-
         [Fact]
         public void ConsultarDevolucao_LocacaoNaoEncontrada_NotificaENaoRetornaPreco()
         {
             // Arrange
             var locacao = LocacaoFixture.Create();
+            var entregador = EntregadorFixture.Create();
+
             _locacaoRepositoryMock.SetupGet(new List<Locacao>());
 
             var locacaoService = new LocacaoService(_locacaoRepositoryMock.Object,
@@ -185,7 +186,7 @@ namespace UnitTests.Services
                                                     _loggerMock.Object);
 
             // Act
-            var result = locacaoService.ConsultarDevolucao(locacao.Id, DateTime.Now);
+            var result = locacaoService.ConsultarDevolucao(locacao.Id, DateTime.Now, entregador.Id);
 
             // Assert
             _notificationContextMock.Verify(nc => nc.AddNotification("Locação não encontrada"), Times.Once);
@@ -193,11 +194,11 @@ namespace UnitTests.Services
         }
 
         [Fact]
-        public void ConsultarDevolucao_LocacaoEncontrada_Sucesso()
+        public void ConsultarDevolucao_LocacaoNaoPertenceAoEntregador_NotificaENaoRetornaPreco()
         {
             // Arrange
-            var previsaoDevolucao = DateTime.Now.AddDays(7);
-            var locacao = LocacaoFixture.Create(Plano.A);
+            var locacao = LocacaoFixture.Create();
+            var entregador = EntregadorFixture.Create();
 
             _locacaoRepositoryMock.SetupGet(new List<Locacao> { locacao });
 
@@ -208,7 +209,32 @@ namespace UnitTests.Services
                                                     _loggerMock.Object);
 
             // Act
-            var preco = locacaoService.ConsultarDevolucao(locacao.Id, previsaoDevolucao);
+            var result = locacaoService.ConsultarDevolucao(locacao.Id, DateTime.Now, entregador.Id);
+
+            // Assert
+            _notificationContextMock.Verify(nc => nc.AddNotification("Locação não pertence ao entregador"), Times.Once);
+            Assert.Equal(0, result);
+        }
+
+        [Fact]
+        public void ConsultarDevolucao_LocacaoEncontrada_Sucesso()
+        {
+            // Arrange
+            var previsaoDevolucao = DateTime.Now.AddDays(7);
+            var locacao = LocacaoFixture.Create(Plano.A);
+            var entregador = EntregadorFixture.Create();
+            locacao.EntregadorId = entregador.Id;
+
+            _locacaoRepositoryMock.SetupGet(new List<Locacao> { locacao });
+
+            var locacaoService = new LocacaoService(_locacaoRepositoryMock.Object,
+                                                    _entregadorServiceMock.Object,
+                                                    _motoServiceMock.Object,
+                                                    _notificationContextMock.Object,
+                                                    _loggerMock.Object);
+
+            // Act
+            var preco = locacaoService.ConsultarDevolucao(locacao.Id, previsaoDevolucao, entregador.Id);
 
             // Assert
             Assert.Equal(210, preco);
