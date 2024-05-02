@@ -45,26 +45,26 @@ namespace Aplicacao.Controllers
 
         [HttpPost("{id}/Aceitar")]
         [Authorize(Roles = Roles.Entregador)]
-        public ActionResult<ResponseModel<object?>> AceitarPedido(Guid id)
+        public ActionResult<ResponseModel<bool>> AceitarPedido(Guid id)
         {
             _service.AceitarPedido(id, LoggerUserGuid());
 
             if (_notificationContext.HasNotifications)
-                return BadRequest(new ResponseModel<object?>(null, _notificationContext.Notifications));
+                return BadRequest(new ResponseModel<bool>(false, _notificationContext.Notifications));
 
-            return Ok(new ResponseModel<object?>(null));
+            return Ok(new ResponseModel<bool>(true));
         }
 
         [HttpPost("{id}/Finalizar")]
         [Authorize(Roles = Roles.Entregador)]
-        public ActionResult<ResponseModel<object?>> FinalizarPedido(Guid id)
+        public ActionResult<ResponseModel<bool>> FinalizarPedido(Guid id)
         {
             _service.FinalizarPedido(id, LoggerUserGuid());
 
             if (_notificationContext.HasNotifications)
-                return BadRequest(new ResponseModel<object?>(null, _notificationContext.Notifications));
+                return BadRequest(new ResponseModel<bool>(false, _notificationContext.Notifications));
 
-            return Ok(new ResponseModel<object?>(null));
+            return Ok(new ResponseModel<bool>(true));
         }
 
     }
