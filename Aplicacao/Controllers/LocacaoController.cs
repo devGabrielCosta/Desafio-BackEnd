@@ -42,14 +42,14 @@ namespace Aplicacao.Controllers
 
         [HttpPost("PrevisaoDevolucao/{id}")]
         [Authorize(Roles = Roles.Entregador)]
-        public ActionResult<ResponseModel<object?>> UpdateDevolucao(UpdatePrevisaoDevolucao request, Guid id)
+        public ActionResult<ResponseModel<PrevisaoLocacao>> UpdateDevolucao(UpdatePrevisaoDevolucao request, Guid id)
         {
             var preco = _service.ConsultarDevolucao(id, request.PrevisaoDevolucao);
 
             if (_notificationContext.HasNotifications)
-                return BadRequest(new ResponseModel<object?>(preco, _notificationContext.Notifications));
+                return BadRequest(new ResponseModel<PrevisaoLocacao>(null, _notificationContext.Notifications));
             else
-                return Ok(new ResponseModel<object?>(new  { Preco = preco } ));
+                return Ok(new ResponseModel<PrevisaoLocacao>(new PrevisaoLocacao(preco)));
 
         }
     }
