@@ -1,4 +1,4 @@
-## Visual studio não está stardando o navegador mesmo com a configuração de LaunchBrowser pro Docker Compose
+## Visual studio não está startando o navegador mesmo com a configuração de LaunchBrowser pro Docker Compose
 
 
 ## Necessário: 
