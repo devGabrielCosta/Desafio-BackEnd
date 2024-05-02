@@ -1,16 +1,18 @@
-﻿using Aplicacao.Mappers;
+﻿using Aplicacao.Configuration;
+using Aplicacao.Mappers;
 using Aplicacao.Requests;
 using Aplicacao.Response;
 using Dominio.Entities;
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Aplicacao.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class EntregadorController : ControllerBase
+    public class EntregadorController : AbstractController
     {
         private IEntregadorService _service { get; }
         private IWebHostEnvironment _environment { get; }
@@ -43,8 +45,9 @@ namespace Aplicacao.Controllers
             return CreatedAtAction(nameof(Insert), new ResponseModel<Entregador>(entregador));
         }
 
-        [HttpPut("{id}/imagemCnh")]
-        public async Task<ActionResult<ResponseModel<Entregador?>>> UpdateImage(IFormFile imagem, Guid id)
+        [HttpPut("imagemCnh")]
+        [Authorize(Roles = Roles.Entregador)]
+        public async Task<ActionResult<ResponseModel<Entregador?>>> UpdateImage(IFormFile imagem)
         {
             if (imagem.Length <= 0)
                 _notificationContext.AddNotification("Necessário enviar uma imagem");
@@ -56,7 +59,7 @@ namespace Aplicacao.Controllers
                 return BadRequest(new ResponseModel<Entregador?>(null, _notificationContext.Notifications));
 
             var url = await UploadImage(imagem);
-            var entregador = _service.UpdateCnhImagemEntregador(id, url);
+            var entregador = _service.UpdateCnhImagemEntregador(LoggerUserGuid(), url);
 
             if (_notificationContext.HasNotifications)
                 return BadRequest(new ResponseModel<Entregador?>(null, _notificationContext.Notifications));
