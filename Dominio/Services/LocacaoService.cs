@@ -34,28 +34,27 @@ namespace Dominio.Services
             var moto = _motoService.GetMotosDisponiveis().FirstOrDefault();
             if (moto == null)
             {
-                var message = "Nenhuma moto disponivel";
-                _notificationContext.AddNotification(message);
-                _logger.LogInformation(message);
+                _notificationContext.AddNotification(ErrorNotifications.NENHUMA_MOTO_DISPONIVEL);
+                _logger.LogInformation(ErrorNotifications.NENHUMA_MOTO_DISPONIVEL);
                 return;
             }
 
             var entregador = _entregadorService.GetLocacoes(locacao.EntregadorId);
             if(entregador == null)
             {
-                _notificationContext.AddNotification("Entregador não existe");
+                _notificationContext.AddNotification(ErrorNotifications.ENTREGADOR_NAO_ENCONTRADO);
                 return;
             }
 
             if(entregador.Locacoes.Any(l => l.Ativo))
             {
-                _notificationContext.AddNotification("Entregador já possui uma locação ativa");
+                _notificationContext.AddNotification(ErrorNotifications.ENTREGADOR_LOCACAO_ATIVA);
                 return;
             }
 
             if (!entregador.CnhTipo.ToLower().Contains("a"))
             {
-                _notificationContext.AddNotification("Entregador não possui categoria A");
+                _notificationContext.AddNotification(ErrorNotifications.ENTREGADOR_SEM_CATEGORIA_A);
                 return;
             }
 
@@ -73,12 +72,12 @@ namespace Dominio.Services
             var locacao = _repository.Get(id).FirstOrDefault();
             if (locacao == null)
             {
-                _notificationContext.AddNotification("Locação não encontrada");
+                _notificationContext.AddNotification(ErrorNotifications.LOCACAO_NAO_ENCONTRADA);
                 return 0;
             }
             if(entregadorId != locacao.EntregadorId)
             {
-                _notificationContext.AddNotification("Locação não pertence ao entregador");
+                _notificationContext.AddNotification(ErrorNotifications.LOCACAO_ENTREGADOR_SEM_PERMISSAO);
                 return 0;
             }
 

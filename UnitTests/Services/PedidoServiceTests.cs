@@ -11,6 +11,7 @@ using UnitTests.Fixtures;
 using UnitTests.Mocks.Repositories;
 using UnitTests.Mocks.Services;
 using UnitTests.Mocks;
+using Dominio.Utilities;
 
 namespace UnitTests.Services
 {
@@ -135,7 +136,7 @@ namespace UnitTests.Services
 
             // Assert
             _pedidoRepositoryMock.Verify(repo => repo.Update(pedido), Times.Never);
-            _notificationContextMock.Verify(nc => nc.AddNotification("Entregador não encontrado"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.ENTREGADOR_NAO_ENCONTRADO), Times.Once);
         }
 
         [Fact]
@@ -163,7 +164,7 @@ namespace UnitTests.Services
 
             // Assert
             _pedidoRepositoryMock.Verify(repo => repo.Update(It.IsAny<Pedido>()), Times.Never);
-            _notificationContextMock.Verify(nc => nc.AddNotification("Pedido não encontrado"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.PEDIDO_NAO_ENCONTRADO), Times.Once);
         }
 
         [Fact]
@@ -193,7 +194,7 @@ namespace UnitTests.Services
 
             // Assert
             _pedidoRepositoryMock.Verify(repo => repo.Update(It.IsAny<Pedido>()), Times.Never);
-            _notificationContextMock.Verify(nc => nc.AddNotification("Entregador não recebeu notificação"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.ENTREGADOR_SEM_NOTIFICACAO), Times.Once);
         }
 
         [Fact]
@@ -224,7 +225,7 @@ namespace UnitTests.Services
 
             // Assert
             _pedidoRepositoryMock.Verify(repo => repo.Update(It.IsAny<Pedido>()), Times.Never);
-            _notificationContextMock.Verify(nc => nc.AddNotification("Pedido não está com status Disponivel"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.PEDIDO_NAO_DISPONIVEL), Times.Once);
         }
 
         [Fact]
@@ -282,7 +283,7 @@ namespace UnitTests.Services
 
             // Assert
             _pedidoRepositoryMock.Verify(repo => repo.Update(It.IsAny<Pedido>()), Times.Never);
-            _notificationContextMock.Verify(nc => nc.AddNotification("Pedido não pertence ao entregador"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.PEDIDO_ENTREGADOR_INCORRETO), Times.Once);
         }
 
         [Fact]
@@ -310,7 +311,7 @@ namespace UnitTests.Services
 
             // Assert
             _pedidoRepositoryMock.Verify(repo => repo.Update(It.IsAny<Pedido>()), Times.Never);
-            _notificationContextMock.Verify(nc => nc.AddNotification("Pedido ainda não foi aceito ou já foi entregue"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.PEDIDO_NAO_ACEITO_ENTREGUE), Times.Once);
         }
     }
 }

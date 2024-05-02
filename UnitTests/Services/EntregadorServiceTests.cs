@@ -3,6 +3,7 @@ using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Storage;
 using Dominio.Services;
+using Dominio.Utilities;
 using Microsoft.Extensions.Logging;
 using Moq;
 using UnitTests.Fixtures;
@@ -88,7 +89,7 @@ namespace UnitTests.Services
 
             // Assert
             _entregadorRepositoryMock.Verify(repo => repo.InsertAsync(entregador), Times.Never);
-            _notificationContextMock.Verify(nc => nc.AddNotification("CNPJ já utilizadO"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification("CNPJ já utilizado"), Times.Once);
             _notificationContextMock.Verify(nc => nc.HasNotifications, Times.Once);
         }
 
@@ -97,6 +98,7 @@ namespace UnitTests.Services
         {
             // Arrange
             var entregador = EntregadorFixture.Create();
+            var antigaUrl = entregador.CnhImagem;
             var imagem = new Dominio.Utilities.File(
                     default(Stream),
                     "",
@@ -115,7 +117,7 @@ namespace UnitTests.Services
 
             // Assert
             _entregadorRepositoryMock.Verify(repo => repo.Update(entregador), Times.Once);
-            Assert.NotEmpty(result.CnhImagem);
+            Assert.NotEqual(antigaUrl, result.CnhImagem);
         }
 
         [Fact]
@@ -138,7 +140,7 @@ namespace UnitTests.Services
 
             // Assert
             _entregadorRepositoryMock.Verify(repo => repo.Update(It.IsAny<Entregador>()), Times.Never);
-            _notificationContextMock.Verify(nc => nc.AddNotification("Entregador não encontrado"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.ENTREGADOR_NAO_ENCONTRADO), Times.Once);
             _loggerMock.VerifyNoOtherCalls();
             Assert.Null(result);
         }
@@ -163,7 +165,7 @@ namespace UnitTests.Services
 
             // Assert
             _entregadorRepositoryMock.Verify(repo => repo.Update(It.IsAny<Entregador>()), Times.Never);
-            _notificationContextMock.Verify(nc => nc.AddNotification("A imagem deve ser do tipo png ou bmp"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.IMAGEM_FORMATO_INVALIDO), Times.Once);
             _loggerMock.VerifyNoOtherCalls();
             Assert.Null(result);
         }

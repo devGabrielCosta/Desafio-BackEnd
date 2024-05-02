@@ -2,6 +2,7 @@
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Services;
+using Dominio.Utilities;
 using Microsoft.Extensions.Logging;
 using Moq;
 using UnitTests.Fixtures;
@@ -77,7 +78,7 @@ namespace UnitTests.Services
             await motoService.InsertMotoAsync(moto);
 
             // Assert
-            _notificationContextMock.Verify(nc => nc.AddNotification("Placa já utilizada"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.PLACA_UTILIZADA), Times.Once);
             _motoRepositoryMock.Verify(mr => mr.InsertAsync(moto), Times.Never);
         }
 
@@ -120,7 +121,7 @@ namespace UnitTests.Services
 
             // Assert
             Assert.Null(result);
-            _notificationContextMock.Verify(nc => nc.AddNotification("Moto não encontrada"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.MOTO_NAO_ENCONTRADA), Times.Once);
             _motoRepositoryMock.Verify(mr => mr.Update(moto), Times.Never);
         }
 
@@ -145,7 +146,7 @@ namespace UnitTests.Services
 
             // Assert
             Assert.Null(result);
-            _notificationContextMock.Verify(nc => nc.AddNotification("Placa já utilizada"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.PLACA_UTILIZADA), Times.Once);
             _motoRepositoryMock.Verify(mr => mr.Update(moto), Times.Never);
         }
 
@@ -204,7 +205,7 @@ namespace UnitTests.Services
             motoService.DeleteMoto(moto.Id);
 
             // Assert
-            _notificationContextMock.Verify(nc => nc.AddNotification("Moto possui locação ativa"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.MOTO_POSSUI_LOCACOES), Times.Once);
             _motoRepositoryMock.Verify(mr => mr.Delete(It.IsAny<Guid>()), Times.Never);
         }
 
@@ -222,7 +223,7 @@ namespace UnitTests.Services
             motoService.DeleteMoto(motoId);
 
             // Assert
-            _notificationContextMock.Verify(nc => nc.AddNotification("Moto não encontrada"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.MOTO_NAO_ENCONTRADA), Times.Once);
             _motoRepositoryMock.Verify(mr => mr.Delete(It.IsAny<Guid>()), Times.Never);
         }
 

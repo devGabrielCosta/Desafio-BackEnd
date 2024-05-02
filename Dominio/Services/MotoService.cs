@@ -2,6 +2,7 @@
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
+using Dominio.Utilities;
 using Microsoft.Extensions.Logging;
 using System.Numerics;
 
@@ -37,7 +38,7 @@ namespace Dominio.Services
             var motosComMesmaPlaca = this.GetByPlaca(moto.Placa).Any();
             if(motosComMesmaPlaca)
             {
-                _notificationContext.AddNotification("Placa já utilizada");
+                _notificationContext.AddNotification(ErrorNotifications.PLACA_UTILIZADA);
                 return;
             }
 
@@ -49,14 +50,14 @@ namespace Dominio.Services
             var moto = _repository.Get(id).FirstOrDefault();
             if (moto == null)
             {
-                _notificationContext.AddNotification("Moto não encontrada");
+                _notificationContext.AddNotification(ErrorNotifications.MOTO_NAO_ENCONTRADA);
                 return null;
             }
 
             var motosComMesmaPlaca = this.GetByPlaca(placa).Any();
             if (motosComMesmaPlaca)
             {
-                _notificationContext.AddNotification("Placa já utilizada");
+                _notificationContext.AddNotification(ErrorNotifications.PLACA_UTILIZADA);
                 return null;
             }
 
@@ -79,12 +80,12 @@ namespace Dominio.Services
 
             if (moto == null)
             {
-                _notificationContext.AddNotification("Moto não encontrada");
+                _notificationContext.AddNotification(ErrorNotifications.MOTO_NAO_ENCONTRADA);
                 return;
             }
-            if(moto.Locacoes.Any(l => l.Ativo))
+            if(moto.Locacoes.Any())
             {
-                _notificationContext.AddNotification("Moto possui locação ativa");
+                _notificationContext.AddNotification(ErrorNotifications.MOTO_POSSUI_LOCACOES);
                 return;
             }
 

@@ -4,6 +4,7 @@ using Dominio.Interfaces.Mensageria;
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
+using Dominio.Utilities;
 using Microsoft.Extensions.Logging;
 
 namespace Dominio.Services
@@ -60,14 +61,14 @@ namespace Dominio.Services
             var entregador = _entregadorService.Get(entregadorId);
             if(entregador == null)
             {
-                _notificationContext.AddNotification("Entregador não encontrado");
+                _notificationContext.AddNotification(ErrorNotifications.ENTREGADOR_NAO_ENCONTRADO);
                 return;
             }
 
             var pedido = this.GetNotificados(id);
             if(pedido == null)
             {
-                _notificationContext.AddNotification("Pedido não encontrado");
+                _notificationContext.AddNotification(ErrorNotifications.PEDIDO_NAO_ENCONTRADO);
                 return;
             }
 
@@ -75,12 +76,12 @@ namespace Dominio.Services
             var pedidoNaoDisponivel = !(pedido.Situacao == Situacao.Disponivel);
             if (entregadorNaoFoiNotificado)
             {
-                _notificationContext.AddNotification("Entregador não recebeu notificação");
+                _notificationContext.AddNotification(ErrorNotifications.ENTREGADOR_SEM_NOTIFICACAO);
                 return;
             }
             if(pedidoNaoDisponivel)
             {
-                _notificationContext.AddNotification("Pedido não está com status Disponivel");
+                _notificationContext.AddNotification(ErrorNotifications.PEDIDO_NAO_DISPONIVEL);
                 return;
             }
 
@@ -95,13 +96,13 @@ namespace Dominio.Services
 
             if (pedido.EntregadorId != entregadorId)
             {
-                _notificationContext.AddNotification("Pedido não pertence ao entregador");
+                _notificationContext.AddNotification(ErrorNotifications.PEDIDO_ENTREGADOR_INCORRETO);
                 return;
             }
 
             if (pedido.Situacao != Situacao.Aceito)
             {
-                _notificationContext.AddNotification("Pedido ainda não foi aceito ou já foi entregue");
+                _notificationContext.AddNotification(ErrorNotifications.PEDIDO_NAO_ACEITO_ENTREGUE);
                 return;
             }
 

@@ -3,6 +3,7 @@ using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
 using Dominio.Interfaces.Storage;
+using Dominio.Utilities;
 using Microsoft.Extensions.Logging;
 
 namespace Dominio.Services
@@ -44,10 +45,10 @@ namespace Dominio.Services
             var cnpjUsado = _repository.Get().Where(x => x.Cnpj == entregador.Cnpj).Any();
 
             if (cnhUsado)
-                _notificationContext.AddNotification("CNH já utilizada");
+                _notificationContext.AddNotification(ErrorNotifications.CNH_UTILIZADA);
 
             if (cnpjUsado)
-                _notificationContext.AddNotification("CNPJ já utilizadO");
+                _notificationContext.AddNotification(ErrorNotifications.CNPJ_UTILIZADO);
 
             if (_notificationContext.HasNotifications)
                 return;
@@ -60,12 +61,12 @@ namespace Dominio.Services
             var entregador = _repository.Get(id).FirstOrDefault();
             if (entregador == null)
             {
-                _notificationContext.AddNotification("Entregador não encontrado");
+                _notificationContext.AddNotification(ErrorNotifications.ENTREGADOR_NAO_ENCONTRADO);
                 return null;
             }
             if(!imagem.Type.Contains("png") && !imagem.Type.Contains("bmp"))
             {
-                _notificationContext.AddNotification("A imagem deve ser do tipo png ou bmp");
+                _notificationContext.AddNotification(ErrorNotifications.IMAGEM_FORMATO_INVALIDO);
                 return null;
             }
 

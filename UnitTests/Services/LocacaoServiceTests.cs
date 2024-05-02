@@ -3,6 +3,7 @@ using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
 using Dominio.Services;
+using Dominio.Utilities;
 using Microsoft.Extensions.Logging;
 using Moq;
 using UnitTests.Fixtures;
@@ -87,7 +88,7 @@ namespace UnitTests.Services
 
             // Assert
             _motoServiceMock.Verify(ms => ms.GetMotosDisponiveis(), Times.Once());
-            _notificationContextMock.Verify(nc => nc.AddNotification("Nenhuma moto disponivel"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.NENHUMA_MOTO_DISPONIVEL), Times.Once);
         }
 
         [Fact]
@@ -110,7 +111,7 @@ namespace UnitTests.Services
             await locacaoService.InsertLocacaoAsync(locacao);
 
             // Assert
-            _notificationContextMock.Verify(nc => nc.AddNotification("Entregador não existe"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.ENTREGADOR_NAO_ENCONTRADO), Times.Once);
             _entregadorServiceMock.Verify(r => r.GetLocacoes(entregadorId), Times.Once);
             _locacaoRepositoryMock.Verify(r => r.InsertAsync(locacao), Times.Never);
         }
@@ -139,7 +140,7 @@ namespace UnitTests.Services
             await locacaoService.InsertLocacaoAsync(locacao);
 
             // Assert
-            _notificationContextMock.Verify(nc => nc.AddNotification("Entregador já possui uma locação ativa"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.ENTREGADOR_LOCACAO_ATIVA), Times.Once);
             _locacaoRepositoryMock.Verify(r => r.InsertAsync(locacao), Times.Never);
         }
 
@@ -166,7 +167,7 @@ namespace UnitTests.Services
             await locacaoService.InsertLocacaoAsync(locacao);
 
             // Assert
-            _notificationContextMock.Verify(nc => nc.AddNotification("Entregador não possui categoria A"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.ENTREGADOR_SEM_CATEGORIA_A), Times.Once);
             _locacaoRepositoryMock.Verify(r => r.InsertAsync(locacao), Times.Never);
         }
 
@@ -189,7 +190,7 @@ namespace UnitTests.Services
             var result = locacaoService.ConsultarDevolucao(locacao.Id, DateTime.Now, entregador.Id);
 
             // Assert
-            _notificationContextMock.Verify(nc => nc.AddNotification("Locação não encontrada"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.LOCACAO_NAO_ENCONTRADA), Times.Once);
             Assert.Equal(0, result);
         }
 
@@ -212,7 +213,7 @@ namespace UnitTests.Services
             var result = locacaoService.ConsultarDevolucao(locacao.Id, DateTime.Now, entregador.Id);
 
             // Assert
-            _notificationContextMock.Verify(nc => nc.AddNotification("Locação não pertence ao entregador"), Times.Once);
+            _notificationContextMock.Verify(nc => nc.AddNotification(ErrorNotifications.LOCACAO_ENTREGADOR_SEM_PERMISSAO), Times.Once);
             Assert.Equal(0, result);
         }
 
