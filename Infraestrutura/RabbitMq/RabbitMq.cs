@@ -10,20 +10,41 @@ namespace Infraestrutura.RabbitMq
     internal class RabbitMq<T>
     {
         private readonly IConnection _connection;
-        private readonly IModel _model;
-        private string _queueName;
+        private readonly IModel _channel;
         private readonly ILogger _logger;
+
+        private string _queueName;
+        private string _queueNameDead => _queueName+"_dead_letter";
+        private string _deadExchange => "dead_letter_exchange";
+
 
         public RabbitMq(
             IConfiguration configuration, 
             string queueName,
             ILogger logger)
         {
-            _connection = CreateConnection(configuration);
-            _model = _connection.CreateModel();
-            _model.QueueDeclare(queueName, durable: false, exclusive: false, autoDelete: false, arguments: null);
-            _queueName = queueName;
             _logger = logger;
+            _connection = CreateConnection(configuration);
+            _channel = _connection.CreateModel();
+            _queueName = queueName;
+
+            Configuration();
+        }
+
+        private void Configuration()
+        {
+            _channel.ExchangeDeclare(_deadExchange, ExchangeType.Fanout);
+
+            var arguments = new Dictionary<string, object>();
+            arguments.Add("x-dead-letter-exchange", _deadExchange);
+            _channel.QueueDeclare(queue:_queueName, exclusive: false, arguments: arguments);
+            arguments.Clear();
+            arguments.Add("x-message-ttl", 5000);
+            arguments.Add("x-dead-letter-exchange", "amq.direct");
+            _channel.QueueDeclare(queue: _queueNameDead, exclusive: false, arguments: arguments);
+
+            _channel.QueueBind(_queueName, "amq.direct", _queueName);
+            _channel.QueueBind(_queueNameDead, _deadExchange, "");
         }
 
         public IConnection CreateConnection(IConfiguration configuration)
@@ -33,13 +54,27 @@ namespace Infraestrutura.RabbitMq
                 Uri = new Uri(configuration.GetConnectionString("rabbitmq"))
             };
 
-            return connectionFactory.CreateConnection();
+            var retryAttempts = 0;
+            while (retryAttempts++ <= 3)
+            {
+                try
+                {
+                    return connectionFactory.CreateConnection();
+                }
+                catch (Exception e)
+                {
+                    _logger.LogWarning($"Conexão falhou, Tentando novamente em 3s");
+                    Thread.Sleep(3000);
+                }
+            }
+
+            return null;
         }
 
         public void Publish(T message)
         {
-            _model.BasicPublish(
-                exchange: "",
+            _channel.BasicPublish(
+                exchange: "amq.direct",
                 routingKey: _queueName,
                 basicProperties: null,
                 body: Encoding.UTF8.GetBytes(JsonSerializer.Serialize(message))
@@ -52,13 +87,14 @@ namespace Infraestrutura.RabbitMq
         {
             _logger.LogInformation("Iniciando consumo");
 
-            var consumer = new EventingBasicConsumer(_model);
+            var consumer = new EventingBasicConsumer(_channel);
+
             consumer.Received += (sender, @event) =>
             {
                 _logger.LogInformation($"[{_queueName}] - Nova mensagem recebida.");
 
-                var body = @event.Body;
-                var message = Encoding.UTF8.GetString(body.ToArray());
+                var body = @event.Body.Span;
+                var message = Encoding.UTF8.GetString(body);
 
                 if (!string.IsNullOrEmpty(message))
                 {
@@ -68,18 +104,18 @@ namespace Infraestrutura.RabbitMq
                         try
                         {
                             handleMessage.Invoke(command);
-                            _model.BasicAck(@event.DeliveryTag, true);
+                            _channel.BasicAck(@event.DeliveryTag, false);
                         }
                         catch (Exception)
                         {
-
+                            _channel.BasicNack(@event.DeliveryTag, false, false);
                         }
 
                 }
 
             };
 
-            _model.BasicConsume(queue: _queueName, autoAck: false, consumer: consumer);
+            _channel.BasicConsume(queue: _queueName, autoAck: false, consumer: consumer);
         }
     }
 }
