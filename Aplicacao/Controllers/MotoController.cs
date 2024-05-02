@@ -23,7 +23,15 @@ namespace Aplicacao.Controllers
             _notificationContext = notificationContext;
         }
 
+        /// <summary>
+        /// Retorna Motos por placa
+        /// </summary>
+        /// <response code="200">Retorna motos</response>
+        /// <response code="403">Apenas administradores podem utilizar a rota</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status403Forbidden)]
         [HttpGet("{placa}")]
+        [HttpGet("")]
         [Authorize(Roles = Roles.Admin)]
         public ActionResult<ResponseModel<IEnumerable<Moto>>> Get(string placa = "")
         {
@@ -31,6 +39,15 @@ namespace Aplicacao.Controllers
             return Ok(new ResponseModel<IEnumerable<Moto>>(motos));
         }
 
+        /// <summary>
+        /// Insere nova moto
+        /// </summary>
+        /// <response code="201">Retorna moto criada</response>
+        /// <response code="400">Algum dado enviado está incorreto</response>
+        /// <response code="403">Apenas administradores podem utilizar a rota</response>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ResponseModel<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status403Forbidden)]
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
         public async Task<ActionResult<ResponseModel<Moto?>>> Insert(CreateMoto request)
@@ -44,7 +61,16 @@ namespace Aplicacao.Controllers
 
             return CreatedAtAction(nameof(Insert), new ResponseModel<Moto>(moto));
         }
-        
+
+        /// <summary>
+        /// Atualiza uma moto
+        /// </summary>
+        /// <response code="200">Retorna moto atualizada</response>
+        /// <response code="400">Algum dado enviado está incorreto</response>
+        /// <response code="403">Apenas administradores podem utilizar a rota</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseModel<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status403Forbidden)]
         [HttpPut("{id}")]
         [Authorize(Roles = Roles.Admin)]
         public ActionResult<ResponseModel<Moto?>> Update(UpdateMoto request, Guid id)
@@ -57,6 +83,16 @@ namespace Aplicacao.Controllers
             return Ok(new ResponseModel<Moto?>(moto));
         }
 
+
+        /// <summary>
+        /// Deleta uma moto
+        /// </summary>
+        /// <response code="200">Retorna moto atualizada</response>
+        /// <response code="400">Algum dado enviado está incorreto</response>
+        /// <response code="403">Apenas administradores podem utilizar a rota</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseModel<object?>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status403Forbidden)]
         [HttpDelete("{id}")]
         [Authorize(Roles = Roles.Admin)]
         public ActionResult<ResponseModel<object?>> Delete(Guid id)

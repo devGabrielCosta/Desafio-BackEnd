@@ -29,6 +29,10 @@ namespace Aplicacao.Controllers
             _notificationContext = notificationContext;
         }
 
+
+        /// <summary>
+        /// Retorna entregadores
+        /// </summary>
         [HttpGet]
         public  ActionResult<ResponseModel<IEnumerable<Entregador>>> Get()
         {
@@ -36,7 +40,14 @@ namespace Aplicacao.Controllers
             return Ok(new ResponseModel<IEnumerable<Entregador>>(entregadores));
         }
 
+        /// <summary>
+        /// Insere novo entregador
+        /// </summary>
+        /// <response code="201">Retorna entregador criado</response>
+        /// <response code="400">Algum dado enviado está incorreto</response>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ResponseModel<object>), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ResponseModel<Entregador?>>> Insert(CreateEntregador request)
         {   
             var entregador = request.Mapper();
@@ -49,7 +60,16 @@ namespace Aplicacao.Controllers
             return CreatedAtAction(nameof(Insert), new ResponseModel<Entregador>(entregador));
         }
 
-        [HttpPut("imagemCnh")]
+        /// <summary>
+        /// Atualiza imagem da CNH do entregador
+        /// </summary>
+        /// <response code="200">Retorna entregador com imagem atualizada</response>
+        /// <response code="400">Algum dado enviado está incorreto</response>
+        /// <response code="403">Apenas entregadores podem utilizar a rota</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseModel<object>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status403Forbidden)]
+        [HttpPatch("imagemCnh")]
         [Authorize(Roles = Roles.Entregador)]
         public async Task<ActionResult<ResponseModel<Entregador?>>> UpdateImage(IFormFile imagem)
         {

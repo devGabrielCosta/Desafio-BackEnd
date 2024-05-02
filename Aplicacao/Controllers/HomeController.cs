@@ -23,6 +23,12 @@ namespace Aplicacao.Controllers
             _entregadorService = entregadorService;
         }
 
+        /// <summary>
+        /// Simula o login apenas por id
+        /// </summary>
+        /// <response code="400">Id não encontrado</response>
+        [ProducesResponseType(typeof(AuthenticationToken), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ResponseModel<object>), StatusCodes.Status400BadRequest)]
         [HttpPost("login/{id}")]
         public ActionResult<AuthenticationToken> Login(Guid id)
         {

@@ -39,7 +39,11 @@ namespace Aplicacao.Configuration
 
         public static void AddSwaggerGenWithJWTAuth(this IServiceCollection services)
         {
-            services.AddSwaggerGen(opt => opt.AddJWTAuth());
+            services.AddSwaggerGen(opt => {
+                opt.AddJWTAuth();
+                var filePath = Path.Combine(System.AppContext.BaseDirectory, "Aplicacao.xml");
+                opt.IncludeXmlComments(filePath);
+            });
         }
 
         private class SecurityRequirementsOperationFilter : IOperationFilter

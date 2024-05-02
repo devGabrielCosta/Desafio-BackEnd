@@ -16,6 +16,10 @@ namespace Aplicacao.Controllers
             _service = service;
         }
 
+        /// <summary>
+        /// Retorna administradores
+        /// </summary>
+        /// <response code="400">Algum dado enviado está incorreto</response>
         [HttpGet]
         public ActionResult<ResponseModel<IEnumerable<Admin>>> Get()
         {
@@ -23,6 +27,11 @@ namespace Aplicacao.Controllers
             return Ok(new ResponseModel<IEnumerable<Admin>>(admins));
         }
 
+        /// <summary>
+        /// Insere um novo administrador
+        /// </summary>
+        /// <response code="201">Retorna administrador criado </response>
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [HttpPost]
         public async Task<ActionResult<ResponseModel<Admin>>> Insert()
         {
