@@ -2,6 +2,7 @@
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
 using Dominio.Interfaces.Services;
+using Dominio.Interfaces.Storage;
 using Microsoft.Extensions.Logging;
 
 namespace Dominio.Services
@@ -11,15 +12,18 @@ namespace Dominio.Services
         private IEntregadorRepository _repository { get; }
         private INotificationContext _notificationContext { get; }
         private ILogger _logger { get; }
+        private IStorage _storage { get; }
 
         public EntregadorService(
             IEntregadorRepository repository, 
             INotificationContext notificationContext,
-            ILogger<EntregadorService> logger)
+            ILogger<EntregadorService> logger,
+            IStorage storage)
         {
             _repository = repository;
             _notificationContext = notificationContext;
             _logger = logger;
+            _storage = storage;
         }
         public IEnumerable<Entregador> Get()
         {
@@ -51,7 +55,7 @@ namespace Dominio.Services
             await _repository.InsertAsync(entregador);
         }
 
-        public Entregador UpdateCnhImagemEntregador(Guid id, string imagem)
+        public async Task<Entregador> UpdateCnhImagemEntregador(Guid id, Utilities.File imagem)
         {
             var entregador = _repository.Get(id).FirstOrDefault();
             if (entregador == null)
@@ -59,10 +63,17 @@ namespace Dominio.Services
                 _notificationContext.AddNotification("Entregador não encontrado");
                 return null;
             }
+            if(!imagem.Type.Contains("png") && !imagem.Type.Contains("bmp"))
+            {
+                _notificationContext.AddNotification("A imagem deve ser do tipo png ou bmp");
+                return null;
+            }
 
-            _logger.LogInformation($"Imagem do entregadorId{entregador.Id} atualizada de {entregador.CnhImagem} para {imagem}");
+            var imagemUrl = await _storage.UploadFile(imagem.Stream, $"CNH-{entregador.Id}.{imagem.Type}");
 
-            entregador.CnhImagem = imagem;
+            _logger.LogInformation($"Imagem do entregadorId{entregador.Id} atualizada de {entregador.CnhImagem} para {imagemUrl}");
+
+            entregador.CnhImagem = imagemUrl;
             _repository.Update(entregador);
 
             return entregador;

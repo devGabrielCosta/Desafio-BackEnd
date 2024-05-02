@@ -1,6 +1,7 @@
 ﻿using Dominio.Entities;
 using Dominio.Interfaces.Notification;
 using Dominio.Interfaces.Repositories;
+using Dominio.Interfaces.Storage;
 using Dominio.Services;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -16,12 +17,15 @@ namespace UnitTests.Services
         private Mock<IEntregadorRepository> _entregadorRepositoryMock;
         private Mock<ILogger<EntregadorService>> _loggerMock;
         private Mock<INotificationContext> _notificationContextMock;
+        private Mock<IStorage> _storage;
 
         public EntregadorServiceTests()
         {
             _entregadorRepositoryMock = EntregadorRepositoryMock.Create();
             _loggerMock = LoggerMock.Create<EntregadorService>();
             _notificationContextMock = NotificationContextMock.Create();
+            _storage = new Mock<IStorage>();
+            _storage.Setup(s => s.UploadFile(It.IsAny<Stream>(), It.IsAny<string>())).Returns((Stream stream, string keyName) => Task.FromResult("Url"+keyName));
         }
 
         [Fact]
@@ -33,7 +37,7 @@ namespace UnitTests.Services
             _entregadorRepositoryMock.SetupGet(new List<Entregador>());
             _notificationContextMock.SetupHasNotifications(false);
 
-            var service = new EntregadorService(_entregadorRepositoryMock.Object, _notificationContextMock.Object, _loggerMock.Object);
+            var service = new EntregadorService(_entregadorRepositoryMock.Object, _notificationContextMock.Object, _loggerMock.Object, _storage.Object);
 
             // Act
             service.InsertEntregadorAsync(entregador).Wait();
@@ -55,7 +59,7 @@ namespace UnitTests.Services
             _entregadorRepositoryMock.SetupGet(new List<Entregador> { entregador2 });
             _notificationContextMock.SetupHasNotifications(true);
 
-            var service = new EntregadorService(_entregadorRepositoryMock.Object, _notificationContextMock.Object, _loggerMock.Object);
+            var service = new EntregadorService(_entregadorRepositoryMock.Object, _notificationContextMock.Object, _loggerMock.Object, _storage.Object);
 
             // Act
             service.InsertEntregadorAsync(entregador).Wait();
@@ -77,7 +81,7 @@ namespace UnitTests.Services
             _entregadorRepositoryMock.SetupGet(new List<Entregador> { entregador2 });
             _notificationContextMock.SetupHasNotifications(true);
 
-            var service = new EntregadorService(_entregadorRepositoryMock.Object, _notificationContextMock.Object, _loggerMock.Object);
+            var service = new EntregadorService(_entregadorRepositoryMock.Object, _notificationContextMock.Object, _loggerMock.Object, _storage.Object);
 
             // Act
             service.InsertEntregadorAsync(entregador).Wait();
@@ -89,44 +93,77 @@ namespace UnitTests.Services
         }
 
         [Fact]
-        public void UpdateCnhImagemEntregador_EntregadorExiste_AtualizaCnhImagem()
+        public async void UpdateCnhImagemEntregador_EntregadorExiste_AtualizaCnhImagem()
         {
             // Arrange
             var entregador = EntregadorFixture.Create();
-            var imagem = "nova-imagem";
+            var imagem = new Dominio.Utilities.File(
+                    default(Stream),
+                    "",
+                    "png"
+            );
 
             _entregadorRepositoryMock.SetupGet(new List<Entregador> { entregador });
 
             var logLevel = LogLevel.Information;
             _loggerMock.SetupLogLevel(logLevel);
 
-            var service = new EntregadorService(_entregadorRepositoryMock.Object, _notificationContextMock.Object, _loggerMock.Object);
+            var service = new EntregadorService(_entregadorRepositoryMock.Object, _notificationContextMock.Object, _loggerMock.Object, _storage.Object);
 
             // Act
-            var result = service.UpdateCnhImagemEntregador(entregador.Id, imagem);
+            var result = await service.UpdateCnhImagemEntregador(entregador.Id, imagem);
 
             // Assert
             _entregadorRepositoryMock.Verify(repo => repo.Update(entregador), Times.Once);
-            Assert.Equal(imagem, result.CnhImagem);
+            Assert.NotEmpty(result.CnhImagem);
         }
 
         [Fact]
-        public void UpdateCnhImagemEntregador_EntregadorNaoEncontrado_NotificaENaoAtualiza()
+        public async void UpdateCnhImagemEntregador_EntregadorNaoEncontrado_NotificaENaoAtualiza()
         {
             // Arrange
             var id = Guid.NewGuid();
-            var imagem = "nova_imagem";
+            var imagem = new Dominio.Utilities.File(
+                    default(Stream),
+                    "",
+                    "png"
+            );
 
             _entregadorRepositoryMock.SetupGet(new List<Entregador>());
 
-            var service = new EntregadorService(_entregadorRepositoryMock.Object, _notificationContextMock.Object, _loggerMock.Object);
+            var service = new EntregadorService(_entregadorRepositoryMock.Object, _notificationContextMock.Object, _loggerMock.Object, _storage.Object);
 
             // Act
-            var result = service.UpdateCnhImagemEntregador(id, imagem);
+            var result = await service.UpdateCnhImagemEntregador(id, imagem);
 
             // Assert
             _entregadorRepositoryMock.Verify(repo => repo.Update(It.IsAny<Entregador>()), Times.Never);
             _notificationContextMock.Verify(nc => nc.AddNotification("Entregador não encontrado"), Times.Once);
+            _loggerMock.VerifyNoOtherCalls();
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public async void UpdateCnhImagemEntregador_TipoDeImagemInvalid_NotificaENaoAtualiza()
+        {
+            // Arrange
+            var entregador = EntregadorFixture.Create();
+            var imagem = new Dominio.Utilities.File(
+                    default(Stream),
+                    "",
+                    "jpeg"
+            );
+
+            _entregadorRepositoryMock.SetupGet(new List<Entregador> { entregador });
+
+            var service = new EntregadorService(_entregadorRepositoryMock.Object, _notificationContextMock.Object, _loggerMock.Object, _storage.Object);
+
+            // Act
+            var result = await service.UpdateCnhImagemEntregador(entregador.Id, imagem);
+
+            // Assert
+            _entregadorRepositoryMock.Verify(repo => repo.Update(It.IsAny<Entregador>()), Times.Never);
+            _notificationContextMock.Verify(nc => nc.AddNotification("A imagem deve ser do tipo png ou bmp"), Times.Once);
             _loggerMock.VerifyNoOtherCalls();
             Assert.Null(result);
         }

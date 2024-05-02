@@ -18,7 +18,11 @@ namespace Aplicacao.Controllers
         private IWebHostEnvironment _environment { get; }
         private INotificationContext _notificationContext { get; }
 
-        public EntregadorController(IEntregadorService service, IWebHostEnvironment environment, INotificationContext notificationContext)
+        public EntregadorController(
+            IEntregadorService service, 
+            IWebHostEnvironment environment, 
+            INotificationContext notificationContext
+        )
         {
             _service = service;
             _environment = environment;
@@ -52,41 +56,22 @@ namespace Aplicacao.Controllers
             if (imagem.Length <= 0)
                 _notificationContext.AddNotification("Necessário enviar uma imagem");
 
-            if (!(imagem.ContentType == "image/png" || imagem.ContentType == "image/bmp"))
-                _notificationContext.AddNotification("A imagem deve ser do tipo png ou bmp");
-
             if (_notificationContext.HasNotifications)
                 return BadRequest(new ResponseModel<Entregador?>(null, _notificationContext.Notifications));
 
-            var url = await UploadImage(imagem);
-            var entregador = _service.UpdateCnhImagemEntregador(LoggerUserGuid(), url);
+            var uploadImage = new Dominio.Utilities.File(
+                imagem.OpenReadStream(), 
+                imagem.FileName.Split(".")[0], 
+                imagem.ContentType.Split("/")[1]
+            );
 
+            var entregador = await _service.UpdateCnhImagemEntregador(LoggerUserGuid(), uploadImage);
+            
             if (_notificationContext.HasNotifications)
                 return BadRequest(new ResponseModel<Entregador?>(null, _notificationContext.Notifications));
 
             return Ok(new ResponseModel<Entregador>(entregador));
         }
 
-        private async Task<string> UploadImage(IFormFile imagem)
-        {         
-            try
-            {   
-                var Path = _environment.ContentRootPath + "\\Imagens\\";
-
-                if (!Directory.Exists(Path))
-                    Directory.CreateDirectory(Path);
-
-                using (FileStream filestream = System.IO.File.Create(Path + imagem.FileName))
-                {
-                    await imagem.CopyToAsync(filestream);
-                    filestream.Flush();
-                    return Path + imagem.FileName;
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
     }
 }

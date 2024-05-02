@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Dominio.Interfaces.Notification;
 using Infraestrutura.Notification;
 using Microsoft.EntityFrameworkCore;
+using Dominio.Interfaces.Storage;
+using Dominio.Storage;
 
 namespace Infraestrutura
 {
@@ -31,6 +33,10 @@ namespace Infraestrutura
             services.AddScoped<ICommandHandler<NotificacaoCommand>, NotificacaoHandler>();
             services.AddSingleton<IPublisher<NotificacaoCommand>, NotificarUsuariosQueuePublisher>();
             services.AddHostedService<NotificarUsuariosQueueConsumer>();
+        }
+        public static void AddStorage(this IServiceCollection services)
+        {
+            services.AddScoped<IStorage, AmazonStorage>();
         }
 
         public static void ExecuteMigration(this IServiceProvider provider)

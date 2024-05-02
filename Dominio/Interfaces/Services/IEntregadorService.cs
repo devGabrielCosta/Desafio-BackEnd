@@ -8,6 +8,6 @@ namespace Dominio.Interfaces.Services
         Entregador Get(Guid Id);
         Entregador GetLocacoes(Guid Id);
         Task InsertEntregadorAsync(Entregador entregador);
-        Entregador UpdateCnhImagemEntregador(Guid id, string imagem);
+        Task<Entregador> UpdateCnhImagemEntregador(Guid id, Utilities.File uploadImage);
     }
 }

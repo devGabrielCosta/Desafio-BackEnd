@@ -27,6 +27,7 @@ builder.Services.AddSwaggerGenWithJWTAuth();
 builder.Services.AddRepositories();
 builder.Services.AddServices();
 builder.Services.AddRabbitMq();
+builder.Services.AddStorage();
 
 var app = builder.Build();
 
