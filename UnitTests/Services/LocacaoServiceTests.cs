@@ -35,7 +35,7 @@ namespace UnitTests.Services
         {
             // Arrange
             var entregadores = EntregadorFixture.CreateList(1);
-            var entregador = EntregadorFixture.Create("a");
+            var entregador = EntregadorFixture.Create();
             entregadores.Add(entregador);
 
             var locacao = LocacaoFixture.Create();
@@ -151,7 +151,7 @@ namespace UnitTests.Services
             var locacao = LocacaoFixture.Create();
             var entregador = EntregadorFixture.Create();
 
-            entregador.CnhTipo = "B";
+            entregador.CnhTipo = CnhTipo.B;
             locacao.EntregadorId = entregador.Id;
 
             _motoServiceMock.SetupGetMotosDisponiveis(new List<Moto> { MotoFixture.Create() });

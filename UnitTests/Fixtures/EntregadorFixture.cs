@@ -17,12 +17,12 @@ namespace UnitTests.Fixtures
                     f.Company.Cnpj().Replace(".", "").Replace("-", "").Replace("/", ""),
                     f.Date.Past(30),
                     f.Random.String2(12, "0123456789"),
-                    f.Random.String2(1, "ABCDE")
+                    f.Random.Enum<CnhTipo>()
                 ))
                 .RuleFor(e => e.CnhImagem, f => f.Image.PicsumUrl());
         }
 
-        public static Entregador Create(string cnhTipo = "a")
+        public static Entregador Create(CnhTipo cnhTipo = CnhTipo.A)
         {
             var entregador = _faker.Generate();
             entregador.CnhTipo = cnhTipo;

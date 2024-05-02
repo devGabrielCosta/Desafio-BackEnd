@@ -34,7 +34,8 @@ namespace Infraestrutura.Context
 
             builder
                 .Property("CnhTipo")
-                .HasColumnType("char(5)")
+                .HasConversion<string>()
+                .HasColumnType("varchar")
                 .IsRequired();
 
             builder

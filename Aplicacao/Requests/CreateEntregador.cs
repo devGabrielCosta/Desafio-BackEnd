@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Dominio.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace Aplicacao.Requests
 {
@@ -20,7 +21,7 @@ namespace Aplicacao.Requests
 
         [Required(ErrorMessage = "O tipo de CNH é obrigatório")]
         [RegularExpression(@"[a-eA-E]{1,5}", ErrorMessage = "Tipo de CNH pode ter no máximo 5 caracteres de 'A' a 'E'")]
-        public string CnhTipo { get; set; }
+        public CnhTipo CnhTipo { get; set; }
 
     }
 }

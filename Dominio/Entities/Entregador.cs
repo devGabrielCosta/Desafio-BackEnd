@@ -8,7 +8,7 @@ namespace Dominio.Entities
         public string Cnpj { get; set; }
         public DateTime DataNascimento { get; set; }
         public string Cnh { get; set; }
-        public string CnhTipo { get; set; }
+        public CnhTipo CnhTipo { get; set; }
         public string? CnhImagem { get; set; }
 
         [JsonIgnore]
@@ -18,7 +18,7 @@ namespace Dominio.Entities
         [JsonIgnore]
         public virtual ICollection<Pedido> Notificacoes { get; set; } = new List<Pedido>();
 
-        public Entregador(string nome, string cnpj, DateTime dataNascimento, string cnh, string cnhTipo) : base()
+        public Entregador(string nome, string cnpj, DateTime dataNascimento, string cnh, CnhTipo cnhTipo) : base()
         {
             Nome = nome;
             Cnpj = cnpj;
@@ -26,5 +26,12 @@ namespace Dominio.Entities
             Cnh = cnh;
             CnhTipo = cnhTipo;
         }
+    }
+
+    public enum CnhTipo
+    {
+        A,
+        B,
+        AB
     }
 }

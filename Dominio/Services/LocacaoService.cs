@@ -52,7 +52,7 @@ namespace Dominio.Services
                 return;
             }
 
-            if (!entregador.CnhTipo.ToLower().Contains("a"))
+            if (entregador.CnhTipo == CnhTipo.B )
             {
                 _notificationContext.AddNotification(ErrorNotifications.ENTREGADOR_SEM_CATEGORIA_A);
                 return;
