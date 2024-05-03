@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\Dominio\Domain.csproj" />
   </ItemGroup>
 
 </Project>
