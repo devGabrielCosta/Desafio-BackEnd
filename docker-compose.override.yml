@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
 
-  aplicacao:
+  application:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_HTTP_PORTS=8080

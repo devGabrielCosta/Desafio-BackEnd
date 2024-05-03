@@ -1,4 +1,4 @@
-﻿using Dominio.Interfaces.Notification;
+﻿using Domain.Interfaces.Notification;
 using Moq;
 
 namespace UnitTests.Mocks

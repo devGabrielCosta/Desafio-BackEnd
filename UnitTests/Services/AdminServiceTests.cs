@@ -1,9 +1,9 @@
 ﻿using Moq;
 using Microsoft.Extensions.Logging;
-using Dominio.Entities;
-using Dominio.Services;
+using Domain.Entities;
+using Domain.Services;
 using UnitTests.Mocks;
-using Dominio.Interfaces.Repositories;
+using Domain.Interfaces.Repositories;
 using UnitTests.Mocks.Repositories;
 
 namespace UnitTests.Services
@@ -20,7 +20,7 @@ namespace UnitTests.Services
         }
 
         [Fact]
-        public void Get_RetornaListaAdmins()
+        public void Get_Return()
         {
             // Arrange
             var admins = new List<Admin>
@@ -43,7 +43,7 @@ namespace UnitTests.Services
         }
 
         [Fact]
-        public async Task CreateAdminAsync_InsereAdmin()
+        public async Task CreateAdminAsync_Create()
         {
             // Arrange
             var admin = new Admin { };

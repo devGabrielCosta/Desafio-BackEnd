@@ -1,5 +1,5 @@
-﻿using Dominio.Entities;
-using Dominio.Interfaces.Repositories;
+﻿using Domain.Entities;
+using Domain.Interfaces.Repositories;
 using Moq;
 
 namespace UnitTests.Mocks.Repositories
