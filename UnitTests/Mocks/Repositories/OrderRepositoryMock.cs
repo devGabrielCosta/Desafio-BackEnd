@@ -13,6 +13,7 @@ namespace UnitTests.Mocks.Repositories
 
         public static void SetupGet(this Mock<IOrderRepository> mock, List<Order> orders)
         {
+            mock.Setup(repo => repo.Get()).Returns(orders.AsQueryable());
             mock.Setup(repo => repo.Get(It.IsAny<Guid>())).Returns((Guid id) => orders.Where(p => p.Id == id).AsQueryable());
         }
 

@@ -19,7 +19,7 @@ namespace Application.Configuration
         public ErrorHandler(RequestDelegate next, ILoggerFactory log)
         {
             this._next = next;
-            this._log = log.CreateLogger("MyErrorHandler");
+            this._log = log.CreateLogger(nameof(ErrorHandler));
         }
 
         public async Task Invoke(HttpContext httpContext)

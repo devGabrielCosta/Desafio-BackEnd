@@ -26,7 +26,8 @@ namespace Infrastructure.RabbitMq
             _logger = logger;
             _connection = CreateConnection(configuration);
             _channel = _connection.CreateModel();
-            _queueName = queueName;
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            _queueName = environment.ToLower()+"_"+queueName;
 
             Configuration();
         }

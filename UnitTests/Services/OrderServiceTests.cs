@@ -57,6 +57,28 @@ namespace UnitTests.Services
         }
 
         [Fact]
+        public void Get_ReturnOrders()
+        {
+            // Arrange
+            var orders = OrderFixture.CreateList(2);
+
+            _orderRepositoryMock.SetupGet(orders);
+
+            var service = new OrderService(
+                _orderRepositoryMock.Object,
+                _publisherNotificacaoMock.Object,
+                _courierServiceMock.Object,
+                _notificationContextMock.Object,
+                _loggerMock.Object);
+
+            // Act
+            var result = service.Get();
+
+            // Assert
+            Assert.Equal(orders, result);
+        }
+
+        [Fact]
         public async Task InsertOrderAsync_Insert()
         {
             // Arrange

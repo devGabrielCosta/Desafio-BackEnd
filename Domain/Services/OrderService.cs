@@ -36,6 +36,11 @@ namespace Domain.Services
             return _repository.GetNotifieds(id).FirstOrDefault();
         }
 
+        public IEnumerable<Order> Get()
+        {
+            return _repository.Get();
+        }
+
         private Order? Get(Guid id)
         {
             return _repository.Get(id).FirstOrDefault();

@@ -20,7 +20,7 @@ namespace Domain.Handlers
             var availableCouriers = _courierRepository.AvailableCouriersForOrder();
             if (!availableCouriers.Any())
             {
-                throw new Exception("No couriers avilable");
+                throw new Exception("No couriers availables");
             }
 
             var order = _orderRepository.Get(@event.OrderId).FirstOrDefault();

@@ -24,8 +24,25 @@ namespace Application.Controllers
         }
 
         /// <summary>
+        /// Retorna pedidos
+        /// </summary>
+        /// <response code="200">Retorna lista de pedidos</response>
+        /// <response code="403">Apenas administradores podem utilizar a rota</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ActionResult), StatusCodes.Status403Forbidden)]
+        [HttpGet]
+        [Authorize(Roles = Roles.Admin)]
+        public ActionResult<ResponseModel<IEnumerable<Order>>> GetOrders()
+        {
+            var orders = _service.Get();
+
+            return Ok(new ResponseModel<IEnumerable<Order>>(orders));
+        }
+
+        /// <summary>
         /// Retorna entregadores notificados pelo pedido
         /// </summary>
+        /// <response code="200">Retorna lista de entregadores</response>
         /// <response code="403">Apenas administradores podem utilizar a rota</response>
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ActionResult), StatusCodes.Status403Forbidden)]

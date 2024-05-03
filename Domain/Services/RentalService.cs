@@ -11,7 +11,7 @@ namespace Domain.Services
     {
         private IRentalRepository _repository { get; }
         private ICourierService _courierService { get; }
-        private IMotorcycleService _motoService { get; }
+        private IMotorcycleService _motorcycleService { get; }
         private INotificationContext _notificationContext { get; }
         private ILogger _logger { get; }
 
@@ -24,14 +24,14 @@ namespace Domain.Services
         {
             _repository = repository;
             _courierService = courierService;
-            _motoService = motorcycleService;
+            _motorcycleService = motorcycleService;
             _notificationContext = notificationContext;
             _logger = logger;
         }
 
         public async Task InsertRentalAsync(Rental rental)
         {
-            var motorcycle = _motoService.GetAvailable().FirstOrDefault();
+            var motorcycle = _motorcycleService.GetAvailable().FirstOrDefault();
             if (motorcycle == null)
             {
                 _notificationContext.AddNotification(ErrorNotifications.NO_MOTORCYCLES_AVAILABLE);
@@ -59,7 +59,7 @@ namespace Domain.Services
             }
 
             motorcycle.Available = false;
-            _motoService.UpdateMotorcycle(motorcycle);
+            _motorcycleService.UpdateMotorcycle(motorcycle);
 
             rental.Motorcycle = motorcycle;
             rental.Courier = courier;
@@ -88,6 +88,7 @@ namespace Domain.Services
 
             rental.ReturnAt = returnDate;
             rental.Active = false;
+            rental.Motorcycle.Available = true;
 
             _repository.Update(rental);
 

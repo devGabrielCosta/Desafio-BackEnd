@@ -249,7 +249,10 @@ namespace UnitTests.Services
             var previsaoDevolucao = DateTime.Now.AddDays(7);
             var rental = RentalFixture.Create(Plan.A);
             var courier = CourierFixture.Create();
+            var motorcycle = MotorcycleFixture.Create();
+            motorcycle.Available = false;
             rental.CourierId = courier.Id;
+            rental.Motorcycle = motorcycle;
 
             _rentalRepositoryMock.SetupGet(new List<Rental> { rental });
 
@@ -264,6 +267,7 @@ namespace UnitTests.Services
 
             // Assert
             Assert.Equal(210, preco);
+            Assert.True(motorcycle.Available);
         }
 
     }

@@ -87,7 +87,6 @@ namespace Application.Controllers
         /// <summary>
         /// Deleta uma moto
         /// </summary>
-        /// <response code="200">Retorna moto atualizada</response>
         /// <response code="400">Algum dado enviado está incorreto</response>
         /// <response code="403">Apenas administradores podem utilizar a rota</response>
         [ProducesResponseType(StatusCodes.Status200OK)]

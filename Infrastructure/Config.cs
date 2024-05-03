@@ -1,6 +1,4 @@
 ﻿using Domain.Handlers.Commands;
-using Domain.Handlers;
-using Domain.Interfaces.Handlers;
 using Domain.Interfaces.Messaging;
 using Domain.Interfaces.Repositories;
 using Infrastructure.Contexts;
@@ -12,14 +10,19 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Interfaces.Storage;
 using Infrastructure.RabbitMq.Publishers;
 using Infrastructure.Storages;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure
 {
     public static class Config
     {
+        public static void AddPSQLContext(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<AppDbContext>( o => o.UseNpgsql(configuration.GetConnectionString("Postgre")));
+        }
+
         public static void AddRepositories(this IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>();
             services.AddScoped<INotificationContext, NotificationContext>();
             services.AddScoped<IAdminRepository, AdminRepository>();
             services.AddScoped<IMotoRepository, MotorcycleRepository>();
@@ -30,11 +33,11 @@ namespace Infrastructure
 
         public static void AddRabbitMq(this IServiceCollection services)
         {
-            services.AddScoped<ICommandHandler<NotifyOrderCouriersCommand>, NotifyOrderCouriersHandler>();
             services.AddSingleton<IPublisher<NotifyOrderCouriersCommand>, NotifyOrderCourierQueuePublisher>();
             services.AddHostedService<NotifyOrderCouriersQueueConsumer>();
         }
-        public static void AddStorage(this IServiceCollection services)
+
+        public static void AddAmazonStorage(this IServiceCollection services)
         {
             services.AddScoped<IStorage, AmazonStorage>();
         }
